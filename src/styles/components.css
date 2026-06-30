@@ -1,0 +1,257 @@
+/* src/styles/components.css */
+
+/* SVG Breadboard Grid Styles */
+.breadboard-base {
+  fill: var(--breadboard-bg);
+}
+
+.breadboard-border-line {
+  stroke: var(--breadboard-border);
+  stroke-width: 2;
+}
+
+.grid-line-minor {
+  stroke: var(--breadboard-grid);
+  stroke-width: 0.5;
+}
+
+.grid-line-major {
+  stroke: var(--breadboard-grid-major);
+  stroke-width: 1;
+}
+
+.breadboard-hole-circle {
+  fill: var(--breadboard-bg);
+  stroke: var(--breadboard-hole);
+  stroke-width: 1;
+  transition: all 0.2s;
+}
+
+.breadboard-hole-circle:hover {
+  stroke: var(--primary-color);
+  fill: var(--breadboard-hole-glow);
+}
+
+/* Optics Component SVG Styles */
+.optical-component {
+  cursor: pointer;
+}
+
+.component-mount {
+  fill: var(--mount-fill);
+  stroke: var(--mount-stroke);
+  stroke-width: 1.5;
+}
+
+.component-body-metal {
+  fill: var(--component-body);
+  stroke: var(--component-border);
+  stroke-width: 1.5;
+  transition: all 0.3s;
+}
+
+.component-glass {
+  fill: var(--optics-glass);
+  stroke: var(--optics-glass-border);
+  stroke-width: 1.5;
+}
+
+.component-accent-part {
+  fill: var(--component-accent);
+}
+
+.optical-component:hover .component-body-metal {
+  stroke: var(--primary-color);
+  fill: var(--primary-glow-bg);
+}
+
+.optical-component:hover .component-glass {
+  stroke: var(--primary-color);
+  box-shadow: 0 0 10px var(--primary-glow-shadow);
+}
+
+.optical-component.active-tweaking .component-body-metal {
+  stroke: var(--primary-color);
+  fill: var(--primary-glow-bg);
+  filter: drop-shadow(0 0 4px var(--primary-glow-shadow));
+}
+
+.component-label-text {
+  font-size: 13.5px;
+  font-weight: 700;
+  fill: var(--text-main);
+  text-anchor: middle;
+  font-family: 'Outfit', sans-serif;
+  user-select: none;
+}
+
+.optical-component:hover .component-label-text {
+  fill: var(--primary-color);
+  font-weight: 700;
+}
+
+/* Beams and Light Propagation */
+.optical-beam {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+/* Glow filters applied dynamically or via CSS */
+.beam-excitation {
+  stroke: var(--laser-red);
+  filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.4));
+}
+
+.beam-raman-signal {
+  stroke: var(--beam-raman);
+  filter: drop-shadow(0 0 6px rgba(192, 132, 252, 0.5));
+}
+
+.beam-pl-emission {
+  stroke: var(--beam-pl);
+  filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.5));
+}
+
+.beam-shg-2omega {
+  stroke: var(--beam-shg);
+  filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.5));
+}
+
+.beam-blocked-line {
+  stroke: var(--beam-blocked);
+  stroke-dasharray: 6 6;
+  opacity: 0.5;
+}
+
+/* Focusing cones */
+.focusing-beam-excitation {
+  fill: rgba(239, 68, 68, 0.15);
+  stroke: rgba(239, 68, 68, 0.4);
+  stroke-width: 1;
+}
+
+.focusing-beam-emission {
+  fill: rgba(34, 197, 94, 0.15);
+  stroke: rgba(34, 197, 94, 0.4);
+  stroke-width: 1;
+}
+
+.focusing-beam-shg {
+  fill: rgba(59, 130, 246, 0.15);
+  stroke: rgba(59, 130, 246, 0.4);
+  stroke-width: 1;
+}
+
+/* Polarization Visualizations */
+.polarization-indicator {
+  stroke: var(--text-main);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.polarization-arrow {
+  fill: var(--text-main);
+}
+
+.polarization-badge-bg {
+  fill: var(--bg-card);
+  stroke: var(--border-card);
+  stroke-width: 1;
+  rx: 8px;
+  ry: 8px;
+}
+
+.polarization-badge-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  fill: var(--text-main);
+  font-weight: 600;
+}
+
+/* Formula Badge inside SVG */
+.formula-badge-bg {
+  fill: rgba(17, 24, 39, 0.85);
+  stroke: var(--primary-glow-border);
+  stroke-width: 1;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+  rx: 10px;
+  ry: 10px;
+}
+
+[data-theme="light"] .formula-badge-bg {
+  fill: rgba(255, 255, 255, 0.9);
+  stroke: rgba(99, 102, 241, 0.2);
+}
+
+.formula-badge-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  fill: var(--text-main);
+  font-weight: 500;
+}
+
+.formula-math-text {
+  font-family: 'JetBrains Mono', 'Times New Roman', serif;
+  font-size: 13px;
+  fill: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Cryostat Vacuum Chamber Visual styling */
+.cryostat-chamber {
+  fill: rgba(186, 230, 253, 0.04);
+  stroke: rgba(56, 189, 248, 0.25);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 2;
+  rx: 12px;
+  ry: 12px;
+}
+
+.cryostat-shield {
+  fill: rgba(56, 189, 248, 0.02);
+  stroke: rgba(56, 189, 248, 0.15);
+  stroke-width: 1;
+  rx: 8px;
+  ry: 8px;
+}
+
+.cryostat-window {
+  fill: none;
+  stroke: #38bdf8;
+  stroke-width: 2;
+}
+
+.magnetic-field-arrow {
+  stroke: #f59e0b;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-dasharray: 3 3;
+}
+.magnetic-field-head {
+  fill: #f59e0b;
+}
+.magnetic-field-label {
+  fill: #f59e0b;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Floating Tooltip Popup styles */
+.optical-tooltip {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  width: 260px;
+  max-width: 90vw;
+  color: var(--text-main);
+  font-family: 'Outfit', sans-serif;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}

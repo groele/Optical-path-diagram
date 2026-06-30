@@ -1,0 +1,123 @@
+/* src/styles/theme.css */
+
+:root {
+  /* Common Design Tokens */
+  --primary-color: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-glow-bg: rgba(99, 102, 241, 0.15);
+  --primary-glow-border: rgba(99, 102, 241, 0.3);
+  --primary-glow-shadow: rgba(99, 102, 241, 0.25);
+  
+  /* Optical Laser/Beam Colors (Aesthetic & Scientific) */
+  --laser-red: #ef4444;       /* 633nm excitation */
+  --laser-green: #10b981;     /* 532nm excitation */
+  --laser-cyan: #06b6d4;      /* 488nm excitation */
+  --laser-deepred: #b91c1c;   /* 785nm excitation */
+  --laser-ir: #ea580c;        /* 800nm fs excitation (fundamental) */
+  --beam-raman: #c084fc;      /* Raman signal (shifted purple) */
+  --beam-pl: #22c55e;         /* PL emission (green/orange) */
+  --beam-shg: #3b82f6;        /* SHG 2w signal (blue) */
+  --beam-blocked: #64748b;    /* Blocked/filtered beams */
+  
+  /* State Colors */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  
+  /* Component Base Styles */
+  --mount-fill: #334155;
+  --mount-stroke: #475569;
+  --glass-fill: rgba(186, 230, 253, 0.3);
+  --glass-stroke: #0284c7;
+}
+
+/* Dark Theme Variables (Default) */
+[data-theme="dark"] {
+  --bg-page: #0b0f19;
+  --bg-card: rgba(17, 24, 39, 0.8);
+  --border-card: rgba(255, 255, 255, 0.07);
+  --text-main: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --line-soft: rgba(255, 255, 255, 0.06);
+  
+  --bg-btn-secondary: rgba(31, 41, 55, 0.5);
+  --border-btn-secondary: rgba(255, 255, 255, 0.08);
+  --text-secondary: #9ca3af;
+  --bg-btn-secondary-hover: rgba(55, 65, 81, 0.5);
+  --border-btn-secondary-hover: rgba(255, 255, 255, 0.15);
+  
+  --bg-badge: rgba(99, 102, 241, 0.2);
+  --text-badge: #818cf8;
+  
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(255, 255, 255, 0.02) inset;
+  --shadow-primary: 0 4px 14px 0 rgba(99, 102, 241, 0.4);
+  
+  /* Optics Breadboard variables */
+  --breadboard-bg: #111827;
+  --breadboard-border: #1f2937;
+  --breadboard-grid: rgba(255, 255, 255, 0.02);
+  --breadboard-grid-major: rgba(255, 255, 255, 0.05);
+  --breadboard-hole: rgba(255, 255, 255, 0.04);
+  --breadboard-hole-glow: rgba(99, 102, 241, 0.1);
+  
+  /* Metal surfaces for dark mode */
+  --component-body: #1e293b;
+  --component-border: #475569;
+  --component-accent: #38bdf8;
+  --optics-glass: rgba(14, 165, 233, 0.15);
+  --optics-glass-border: #0ea5e9;
+}
+
+/* Light Theme Variables */
+[data-theme="light"] {
+  --bg-page: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --border-card: rgba(0, 0, 0, 0.06);
+  --text-main: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --line-soft: rgba(0, 0, 0, 0.06);
+  
+  --bg-btn-secondary: rgba(241, 245, 249, 0.8);
+  --border-btn-secondary: rgba(0, 0, 0, 0.06);
+  --text-secondary: #475569;
+  --bg-btn-secondary-hover: rgba(226, 232, 240, 0.8);
+  --border-btn-secondary-hover: rgba(0, 0, 0, 0.1);
+  
+  --bg-badge: rgba(99, 102, 241, 0.1);
+  --text-badge: #4f46e5;
+  
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-primary: 0 4px 12px 0 rgba(99, 102, 241, 0.3);
+  
+  /* Optics Breadboard variables */
+  --breadboard-bg: #f8fafc;
+  --breadboard-border: #e2e8f0;
+  --breadboard-grid: rgba(0, 0, 0, 0.02);
+  --breadboard-grid-major: rgba(0, 0, 0, 0.06);
+  --breadboard-hole: rgba(0, 0, 0, 0.07);
+  --breadboard-hole-glow: rgba(99, 102, 241, 0.03);
+  
+  /* Metal surfaces for light mode */
+  --component-body: #e2e8f0;
+  --component-border: #64748b;
+  --component-accent: #0284c7;
+  --optics-glass: rgba(56, 189, 248, 0.1);
+  --optics-glass-border: #0284c7;
+}
+
+/* Icon visibility */
+[data-theme="dark"] .icon-sun {
+  display: block;
+}
+[data-theme="dark"] .icon-moon {
+  display: none;
+}
+[data-theme="light"] .icon-sun {
+  display: none;
+}
+[data-theme="light"] .icon-moon {
+  display: block;
+}
