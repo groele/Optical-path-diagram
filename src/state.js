@@ -89,6 +89,9 @@ class AppState {
       this.material = "WSe₂";
       this.temperature = 1.7; // cryogenic
       this.magneticField = 0;
+    } else if (layoutId === "shgStandard") {
+      this.laserWavelength = "1064 nm";
+      this.material = "MoS₂";
     } else if (layoutId === "shgPolarized") {
       this.laserWavelength = "1064 nm"; // Fundamental excitation
       this.hwpAngle = 0;

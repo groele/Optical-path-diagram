@@ -11,7 +11,7 @@ export function renderAnnotation(annotation, layoutId) {
   g.setAttribute("id", `ann-${annotation.id}`);
   g.setAttribute("transform", `translate(${annotation.x}, ${annotation.y})`);
 
-  if (!state.showFormulas) return g;
+  if (!state.showFormulas && annotation.type !== "rotator") return g;
 
   if (annotation.type === "badge") {
     const textStr = annotation.text;
@@ -134,69 +134,133 @@ export function renderAnnotation(annotation, layoutId) {
   } 
   
   else if (annotation.type === "rotator") {
-    // Render rotating mechanical stage indicator
-    const isHwp = annotation.id.includes("hwp") || annotation.id.includes("qwp");
-    const color = isHwp ? "#a855f7" : "#ea580c"; // Purple for waveplates, Orange for analyzer
-    
-    // 1. Draw circular arrow path
+    const isWaveplateStage = annotation.id.includes("hwp") || annotation.id.includes("qwp");
+    const isQwp = annotation.id.includes("qwp");
+    const color = isWaveplateStage ? "#a855f7" : "#ea580c";
+    const accent = isWaveplateStage ? "#f59e0b" : "#38bdf8";
+    const targetDx = annotation.targetX !== undefined ? annotation.targetX - annotation.x : (isWaveplateStage ? -40 : -20);
+    const targetDy = annotation.targetY !== undefined ? annotation.targetY - annotation.y : (isWaveplateStage ? 0 : 80);
+    const labelX = annotation.labelX ?? 22;
+    const labelY = annotation.labelY ?? -18;
+    const labelWidth = annotation.labelWidth ?? 236;
+    const labelHeight = annotation.detail ? 58 : 44;
+    const title = annotation.title || annotation.text;
+    const detail = annotation.detail || "";
+
+    // Leader points directly to the motorized rotating mount.
+    const leader = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    leader.setAttribute("d", `M ${targetDx} ${targetDy} L 0 0 L ${labelX - 6} ${labelY + labelHeight / 2}`);
+    leader.setAttribute("fill", "none");
+    leader.setAttribute("stroke", color);
+    leader.setAttribute("stroke-width", "2");
+    leader.setAttribute("stroke-dasharray", "7 5");
+    leader.setAttribute("opacity", "0.85");
+    g.appendChild(leader);
+
+    const targetRing = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    targetRing.setAttribute("cx", targetDx.toString());
+    targetRing.setAttribute("cy", targetDy.toString());
+    targetRing.setAttribute("r", isWaveplateStage ? "44" : "40");
+    targetRing.setAttribute("fill", "none");
+    targetRing.setAttribute("stroke", color);
+    targetRing.setAttribute("stroke-width", "2.8");
+    targetRing.setAttribute("stroke-dasharray", "9 5");
+    targetRing.setAttribute("opacity", "0.75");
+    g.appendChild(targetRing);
+
+    const hub = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    hub.setAttribute("cx", targetDx.toString());
+    hub.setAttribute("cy", targetDy.toString());
+    hub.setAttribute("r", isWaveplateStage ? "10" : "9");
+    hub.setAttribute("fill", "var(--bg-card)");
+    hub.setAttribute("stroke", color);
+    hub.setAttribute("stroke-width", "2");
+    g.appendChild(hub);
+
+    // Circular arrow marks the movable rotation mechanism.
     const arc = document.createElementNS("http://www.w3.org/2000/svg", "path");
     arc.setAttribute("d", "M -12 -5 A 12 12 0 1 1 -12 5");
     arc.setAttribute("fill", "none");
     arc.setAttribute("stroke", color);
-    arc.setAttribute("stroke-width", "2");
+    arc.setAttribute("stroke-width", "3");
     g.appendChild(arc);
 
-    // 2. Arrowhead
     const head = document.createElementNS("http://www.w3.org/2000/svg", "path");
     head.setAttribute("d", "M -12 5 L -16 1 L -8 1 Z");
     head.setAttribute("fill", color);
     g.appendChild(head);
 
-    // 3. Info text box next to the arrow
-    const paddingX = 18;
-    
+    const card = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    card.setAttribute("x", labelX.toString());
+    card.setAttribute("y", labelY.toString());
+    card.setAttribute("width", labelWidth.toString());
+    card.setAttribute("height", labelHeight.toString());
+    card.setAttribute("fill", "var(--bg-card)");
+    card.setAttribute("stroke", color);
+    card.setAttribute("stroke-width", "1");
+    card.setAttribute("opacity", "0.92");
+    card.setAttribute("rx", "6");
+    card.setAttribute("ry", "6");
+    g.appendChild(card);
+
+    const tag = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    tag.setAttribute("x", (labelX + 8).toString());
+    tag.setAttribute("y", (labelY + 10).toString());
+    tag.setAttribute("width", isWaveplateStage ? "50" : "78");
+    tag.setAttribute("height", "22");
+    tag.setAttribute("rx", "4");
+    tag.setAttribute("fill", color);
+    tag.setAttribute("opacity", "0.9");
+    g.appendChild(tag);
+
+    const tagText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    tagText.textContent = isQwp ? "QWP" : (isWaveplateStage ? "HWP" : "Analyzer");
+    tagText.setAttribute("x", (labelX + (isWaveplateStage ? 33 : 47)).toString());
+    tagText.setAttribute("y", (labelY + 25).toString());
+    tagText.setAttribute("font-family", "'JetBrains Mono', monospace");
+    tagText.setAttribute("font-size", "11px");
+    tagText.setAttribute("font-weight", "800");
+    tagText.setAttribute("fill", "#ffffff");
+    tagText.setAttribute("text-anchor", "middle");
+    g.appendChild(tagText);
+
     const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    txt.textContent = annotation.text;
-    txt.setAttribute("x", paddingX.toString());
-    txt.setAttribute("y", "-4");
+    txt.textContent = title;
+    txt.setAttribute("x", (labelX + (isWaveplateStage ? 68 : 96)).toString());
+    txt.setAttribute("y", (labelY + 26).toString());
     txt.setAttribute("font-family", "'Outfit', sans-serif");
-    txt.setAttribute("font-size", "11px");
-    txt.setAttribute("font-weight", "700");
-    txt.setAttribute("fill", color);
+    txt.setAttribute("font-size", "16px");
+    txt.setAttribute("font-weight", "800");
+    txt.setAttribute("fill", "var(--text-main)");
     g.appendChild(txt);
 
-    // Add smaller scanning angle indicator
+    if (detail) {
+      const detailTxt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      detailTxt.textContent = detail;
+      detailTxt.setAttribute("x", (labelX + 10).toString());
+      detailTxt.setAttribute("y", (labelY + 47).toString());
+      detailTxt.setAttribute("font-family", "'Outfit', sans-serif");
+      detailTxt.setAttribute("font-size", "13px");
+      detailTxt.setAttribute("font-weight", "700");
+      detailTxt.setAttribute("fill", accent);
+      g.appendChild(detailTxt);
+    }
+
     const subTxt = document.createElementNS("http://www.w3.org/2000/svg", "text");
     let angleVal = "";
-    if (isHwp) {
+    if (isWaveplateStage) {
       angleVal = annotation.id.includes("qwp") ? `快轴 θ = ${state.qwpAngle.toFixed(1)}°` : `快轴扫描 θ = ${state.hwpAngle.toFixed(1)}°`;
     } else {
       angleVal = `偏振轴 θ = ${state.analyzerAngle}°`;
     }
     subTxt.textContent = angleVal;
-    subTxt.setAttribute("x", paddingX.toString());
-    subTxt.setAttribute("y", "9");
+    subTxt.setAttribute("x", (labelX + 10).toString());
+    subTxt.setAttribute("y", (labelY + labelHeight + 16).toString());
     subTxt.setAttribute("font-family", "'JetBrains Mono', monospace");
-    subTxt.setAttribute("font-size", "9px");
-    subTxt.setAttribute("font-weight", "500");
+    subTxt.setAttribute("font-size", "12px");
+    subTxt.setAttribute("font-weight", "700");
     subTxt.setAttribute("fill", "var(--text-muted)");
     g.appendChild(subTxt);
-
-    // Add border background box behind text for readability
-    const box = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    const textLengthEstimate = Math.max(annotation.text.length * 10, angleVal.length * 6) + 12;
-    box.setAttribute("x", (paddingX - 6).toString());
-    box.setAttribute("y", "-16");
-    box.setAttribute("width", textLengthEstimate.toString());
-    box.setAttribute("height", "30");
-    box.setAttribute("fill", "var(--bg-card)");
-    box.setAttribute("stroke", color);
-    box.setAttribute("stroke-width", "0.5");
-    box.setAttribute("opacity", "0.85");
-    box.setAttribute("rx", "4");
-    box.setAttribute("ry", "4");
-    
-    g.insertBefore(box, txt); // Insert background box under text
   }
 
   return g;

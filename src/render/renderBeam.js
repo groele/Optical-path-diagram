@@ -324,7 +324,7 @@ function getPolarizationAtCoordinates(x, y, beam, layoutId, state) {
     }
 
     // 2. Non-polarized standard setups
-    if (layoutId === "ramanStandard" || layoutId === "ramanIntro" || layoutId === "plStandard" || layoutId === "plIntro" || layoutId === "lifetime") {
+    if (layoutId === "ramanStandard" || layoutId === "ramanIntro" || layoutId === "plStandard" || layoutId === "plIntro" || layoutId === "lifetime" || layoutId === "shgStandard") {
       if (x < 420) {
         return { angle: 90, isCircular: false, stateText: "Linear-V" };
       } else if (x < 700) {
@@ -421,6 +421,13 @@ function getPolarizationAtCoordinates(x, y, beam, layoutId, state) {
     }
     if (layoutId === "plStandard" || layoutId === "lifetime") {
       return { angle: 90, isCircular: false, stateText: "Unpolarized" };
+    }
+    if (layoutId === "shgStandard") {
+      if (y > 350 || x < 980) {
+        return { angle: 90, isCircular: false, stateText: "Partially polarized" };
+      } else {
+        return { angle: 90, isCircular: false, stateText: "Unpolarized" };
+      }
     }
 
     // 3. PL Polarized

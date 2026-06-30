@@ -30,7 +30,7 @@ export function renderLayoutList(container, setLayoutCallback) {
     {
       title: "Ⅳ. 非线性倍频测试 (SHG)",
       color: "#f97316", // Orange (1064nm -> 532nm)
-      layouts: ["shgIntro", "shgPolarized"]
+      layouts: ["shgIntro", "shgStandard", "shgPolarized"]
     },
     {
       title: "Ⅴ. 硬件数据集成链路",

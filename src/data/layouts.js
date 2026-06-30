@@ -438,8 +438,30 @@ export const opticalLayouts = {
     ],
     annotations: [
       { id: "ann-dolp", type: "formula", x: 1060, y: 180, text: "DOLP = (I_∥ - I_⟂) / (I_∥ + I_⟂)" },
-      { id: "hwp-rotator", type: "rotator", x: 740, y: 450, text: "HWP 自动转台 (共享复用)" },
-      { id: "analyzer-rotator", type: "rotator", x: 1200, y: 270, text: "检偏器转台" }
+      {
+        id: "hwp-rotator",
+        type: "rotator",
+        x: 740,
+        y: 450,
+        targetX: 700,
+        targetY: 450,
+        labelWidth: 238,
+        text: "HWP 自动转台 (共享复用)",
+        title: "电动旋转台",
+        detail: "线偏振角扫描"
+      },
+      {
+        id: "analyzer-rotator",
+        type: "rotator",
+        x: 1200,
+        y: 270,
+        targetX: 1180,
+        targetY: 350,
+        labelWidth: 246,
+        text: "检偏器转台",
+        title: "检偏器旋转座",
+        detail: "线偏振解析角"
+      }
     ],
     info: {
       purpose: "T型线偏振分辨发光测试（Polarization PL）。利用镜头与二向色镜之间共用的 HWP 调节激发和发射线极化，探测低对称晶体激子辐射各向异性。",
@@ -495,8 +517,30 @@ export const opticalLayouts = {
     annotations: [
       { id: "ann-docp", type: "formula", x: 1060, y: 180, text: "DOCP = (I_σ⁺ - I_σ⁻) / (I_σ⁺ + I_σ⁻)" },
       { id: "ann-valley", type: "badge", x: 700, y: 270, text: "自旋谷定则保护" },
-      { id: "qwp-rotator", type: "rotator", x: 740, y: 450, text: "QWP 自动转台 (1/4波片复用)" },
-      { id: "analyzer-rotator", type: "rotator", x: 1200, y: 270, text: "检偏器转台" }
+      {
+        id: "qwp-rotator",
+        type: "rotator",
+        x: 740,
+        y: 450,
+        targetX: 700,
+        targetY: 450,
+        labelWidth: 250,
+        text: "QWP 自动转台 (1/4波片复用)",
+        title: "电动旋转台",
+        detail: "σ⁺/σ⁻ 圆偏振切换"
+      },
+      {
+        id: "analyzer-rotator",
+        type: "rotator",
+        x: 1200,
+        y: 270,
+        targetX: 1180,
+        targetY: 350,
+        labelWidth: 254,
+        text: "检偏器转台",
+        title: "检偏器旋转座",
+        detail: "QWP 后线偏振读出"
+      }
     ],
     info: {
       purpose: "T型圆偏振/谷分辨 PL 光致发光测试。1/4波片 (QWP) 置于镜头与二向色镜之间共用，实现双路（激发+返回收集）圆偏振状态调制与解析。",
@@ -583,7 +627,68 @@ export const opticalLayouts = {
     }
   },
 
-  // 17. SHG Polarized
+  // 17. Standard SHG (non-polarized intensity)
+  shgStandard: {
+    id: "shgStandard",
+    title: "标准二次谐波测试 (SHG)",
+    subtitle: "Standard SHG Intensity Setup",
+    category: "SHG",
+    components: [
+      { id: "laser-main", type: "laser", x: 160, y: 350, rotation: 0, label: "1064nm fs飞秒激光", params: { wavelength: "1064 nm" } },
+      { id: "beam-splitter-main", type: "beamsplitter", x: 700, y: 350, rotation: 0, label: "分束镜 (BS)" },
+      { id: "objective-main", type: "objective", x: 700, y: 580, rotation: 0, label: "物镜" },
+      { id: "sample-main", type: "sample", x: 700, y: 720, rotation: 0, label: "2D 样品 (MoS₂)", params: { material: "MoS₂", crystalAngle: 0 } },
+      { id: "filter-shortpass", type: "filter", subtype: "short-pass", x: 980, y: 350, rotation: 0, label: "短通滤片 (SP)" },
+      { id: "filter-bandpass", type: "filter", subtype: "band-pass", x: 1140, y: 350, rotation: 0, label: "532nm 窄带滤片" },
+      { id: "detector-pmt", type: "detector", subtype: "PMT", x: 1360, y: 350, rotation: 0, label: "PMT 探测器" }
+    ],
+    beams: [
+      {
+        id: "beam-fundamental-omega",
+        type: "excitation",
+        colorToken: "var(--laser-ir)",
+        width: 5,
+        points: [[160, 350], [700, 350], [700, 720]],
+        label: "1064nm 基频光 (ω)",
+        hasPolarization: true,
+        polarizationPoints: [[260, 350], [560, 350], [700, 520], [700, 650]]
+      },
+      {
+        id: "beam-shg-2omega",
+        type: "signal",
+        colorToken: "var(--laser-green)",
+        width: 3.5,
+        points: [[700, 720], [700, 350], [1360, 350]],
+        label: "532nm 二倍频信号 (2ω)",
+        hasPolarization: true,
+        polarizationPoints: [[700, 650], [700, 520], [860, 350], [1060, 350], [1250, 350]]
+      },
+      {
+        id: "beam-blocked-omega",
+        type: "blocked",
+        colorToken: "var(--beam-blocked)",
+        width: 4,
+        points: [[980, 350], [1010, 400]],
+        label: "blocked 1064nm",
+        hasPolarization: false
+      }
+    ],
+    annotations: [
+      { id: "ann-shg-intensity", type: "badge", x: 1040, y: 270, text: "二倍频强度测量 (非偏振)" },
+      { id: "ann-formula", type: "formula", x: 1060, y: 180, text: "I(2ω) ∝ (χ⁽²⁾)² · I(ω)²" }
+    ],
+    info: {
+      purpose: "T型标准二次谐波发生 (SHG) 测试几何。利用 1064 nm 飞秒超快脉冲激发样品，不进行偏振扫描，直接在探测端用 PMT 记录 532 nm 处的二倍频强度。",
+      polarization: "非偏振依赖性强度测量。激发源提供基础线偏振，收集到的二倍频绿光直接被 PMT 探测。",
+      notes: [
+        "激发光源使用 1064 nm fs 飞秒激光器提供高峰值能量密度。",
+        "短通滤片和 532nm 窄带滤片用于彻底滤除 1064nm 的基频散射背噪。",
+        "探测器使用高灵敏度的光电倍增管 (PMT)。"
+      ]
+    }
+  },
+
+  // 18. SHG Polarized
   shgPolarized: {
     id: "shgPolarized",
     title: "极角分辨 SHG 偏振光谱",
