@@ -274,3 +274,17 @@
   stroke-dasharray: 4 3;
   pointer-events: none;
 }
+
+/* Motorized Rotator Annotation Card Styles */
+.rotator-card-bg {
+  fill: rgba(15, 23, 42, 0.92);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.45));
+  rx: 8px;
+  ry: 8px;
+  opacity: 0.95;
+}
+[data-theme="light"] .rotator-card-bg {
+  fill: rgba(255, 255, 255, 0.96);
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
+}

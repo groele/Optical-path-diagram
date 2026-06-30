@@ -143,7 +143,7 @@ export function renderAnnotation(annotation, layoutId) {
     const labelX = annotation.labelX ?? 22;
     const labelY = annotation.labelY ?? -18;
     const labelWidth = annotation.labelWidth ?? 236;
-    const labelHeight = annotation.detail ? 58 : 44;
+    const labelHeight = annotation.detail ? 76 : 54;
     const title = annotation.title || annotation.text;
     const detail = annotation.detail || "";
 
@@ -195,12 +195,8 @@ export function renderAnnotation(annotation, layoutId) {
     card.setAttribute("y", labelY.toString());
     card.setAttribute("width", labelWidth.toString());
     card.setAttribute("height", labelHeight.toString());
-    card.setAttribute("fill", "var(--bg-card)");
+    card.setAttribute("class", "rotator-card-bg");
     card.setAttribute("stroke", color);
-    card.setAttribute("stroke-width", "1");
-    card.setAttribute("opacity", "0.92");
-    card.setAttribute("rx", "6");
-    card.setAttribute("ry", "6");
     g.appendChild(card);
 
     const tag = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -255,12 +251,21 @@ export function renderAnnotation(annotation, layoutId) {
     }
     subTxt.textContent = angleVal;
     subTxt.setAttribute("x", (labelX + 10).toString());
-    subTxt.setAttribute("y", (labelY + labelHeight + 16).toString());
+    subTxt.setAttribute("y", (labelY + labelHeight - 10).toString()); // Inside card
     subTxt.setAttribute("font-family", "'JetBrains Mono', monospace");
-    subTxt.setAttribute("font-size", "12px");
+    subTxt.setAttribute("font-size", "11.5px");
     subTxt.setAttribute("font-weight", "700");
-    subTxt.setAttribute("fill", "var(--text-muted)");
+    subTxt.setAttribute("fill", "var(--text-main)");
     g.appendChild(subTxt);
+
+    // Glowing LED status indicator dot
+    const led = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    led.setAttribute("cx", (labelX + labelWidth - 16).toString());
+    led.setAttribute("cy", (labelY + labelHeight - 14).toString());
+    led.setAttribute("r", "4");
+    led.setAttribute("fill", "#10b981"); // glowing emerald active green
+    led.setAttribute("style", "filter: drop-shadow(0 0 2px #10b981)");
+    g.appendChild(led);
   }
 
   return g;

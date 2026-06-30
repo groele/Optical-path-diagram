@@ -308,8 +308,30 @@ export const opticalLayouts = {
     annotations: [
       { id: "ann-prrs", type: "badge", x: 1040, y: 270, text: "极分辨偏振拉曼扫描" },
       { id: "ann-formula", type: "formula", x: 1060, y: 180, text: "E' 剪切模: I ∝ cos²(4θ_hwp - θ_A)" },
-      { id: "hwp-rotator", type: "rotator", x: 740, y: 450, text: "HWP 自动转台 (镜头-分束镜间)" },
-      { id: "analyzer-rotator", type: "rotator", x: 1200, y: 270, text: "检偏器转台 (平行/正交)" }
+      {
+        id: "hwp-rotator",
+        type: "rotator",
+        x: 740,
+        y: 450,
+        targetX: 700,
+        targetY: 450,
+        labelWidth: 238,
+        text: "HWP 自动转台 (镜头-分束镜间)",
+        title: "电动旋转台",
+        detail: "双通极化调制"
+      },
+      {
+        id: "analyzer-rotator",
+        type: "rotator",
+        x: 1200,
+        y: 210,
+        targetX: 1180,
+        targetY: 350,
+        labelWidth: 246,
+        text: "检偏器转台 (平行/正交)",
+        title: "检偏器旋转座",
+        detail: "声子极化各向异性"
+      }
     ],
     info: {
       purpose: "T型偏振分辨拉曼光谱。半波片 HWP 位于显微镜头与二向色镜/分束镜之间，为激光激发和拉曼散射信号双路共用（复用结构）。",
@@ -454,7 +476,7 @@ export const opticalLayouts = {
         id: "analyzer-rotator",
         type: "rotator",
         x: 1200,
-        y: 270,
+        y: 210,
         targetX: 1180,
         targetY: 350,
         labelWidth: 246,
@@ -533,7 +555,7 @@ export const opticalLayouts = {
         id: "analyzer-rotator",
         type: "rotator",
         x: 1200,
-        y: 270,
+        y: 210,
         targetX: 1180,
         targetY: 350,
         labelWidth: 254,
@@ -740,8 +762,30 @@ export const opticalLayouts = {
     annotations: [
       { id: "ann-flower", type: "badge", x: 700, y: 270, text: "六瓣花形偏振各向异性" },
       { id: "ann-formula", type: "formula", x: 1060, y: 180, text: "I_2ω ∝ cos²(3θ_in)" },
-      { id: "hwp-rotator", type: "rotator", x: 740, y: 450, text: "HWP 自动转台 (共享复用)" },
-      { id: "analyzer-rotator", type: "rotator", x: 1200, y: 270, text: "检偏器转台" }
+      {
+        id: "hwp-rotator",
+        type: "rotator",
+        x: 740,
+        y: 450,
+        targetX: 700,
+        targetY: 450,
+        labelWidth: 238,
+        text: "HWP 自动转台 (共享复用)",
+        title: "电动旋转台",
+        detail: "双通极化调控"
+      },
+      {
+        id: "analyzer-rotator",
+        type: "rotator",
+        x: 1200,
+        y: 210,
+        targetX: 1280, // Target analyzer coordinate in SHG is 1280!
+        targetY: 350,
+        labelWidth: 246,
+        text: "检偏器转台",
+        title: "检偏器旋转座",
+        detail: "六瓣花偏振解析"
+      }
     ],
     info: {
       purpose: "T型极角分辨二次谐波发生 (SHG) 测试几何。利用 fs 飞秒 1064 nm 脉冲激发，在镜头与二向色镜间复用 HWP 进行双通极化调控，在探测端用 PMT 记录 532 nm 处的二倍频强度。",
