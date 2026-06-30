@@ -225,6 +225,27 @@ function renderTheory(container, layout) {
   polarSummary.innerHTML = `<p><strong>偏振配置：</strong>${layout.info.polarization}</p>`;
   container.appendChild(polarSummary);
 
+  const principleSteps = getPrincipleSteps(layout.id);
+  if (principleSteps.length > 0) {
+    const principleTitle = document.createElement("div");
+    principleTitle.className = "info-notes-title";
+    principleTitle.textContent = "读图顺序 / 理论基础";
+    container.appendChild(principleTitle);
+
+    const principleGrid = document.createElement("div");
+    principleGrid.className = "principle-step-grid";
+    principleSteps.forEach(step => {
+      const card = document.createElement("div");
+      card.className = "principle-step-card";
+      card.innerHTML = `
+        <div class="principle-step-title">${step.title}</div>
+        <div class="principle-step-body">${step.body}</div>
+      `;
+      principleGrid.appendChild(card);
+    });
+    container.appendChild(principleGrid);
+  }
+
   // Show formulas calculation preview
   if (state.showFormulas) {
     const calG = renderLiveMathPreview(layout.id);
@@ -317,6 +338,83 @@ function renderTheory(container, layout) {
     });
     container.appendChild(grid);
   }
+}
+
+function getPrincipleSteps(layoutId) {
+  if (layoutId === "ramanIntro" || layoutId === "ramanStandard") {
+    return [
+      { title: "测量目标", body: "读晶格振动声子：峰位看振动能量，峰宽看寿命/无序，强度看散射截面与取向。" },
+      { title: "关键机制", body: "光子经虚能级非弹性散射；Stokes 光比入射光低一个声子能量。" },
+      { title: "光路原因", body: "Notch 去除强瑞利光，1800 g/mm 光栅解析 cm⁻¹ 级频移。" }
+    ];
+  }
+
+  if (layoutId === "ramanVV" || layoutId === "ramanVH") {
+    const isVV = layoutId === "ramanVV";
+    return [
+      { title: isVV ? "VV 几何" : "VH 几何", body: isVV ? "起偏和检偏同轴，优先读平行偏振允许的全对称模式。" : "起偏和检偏正交，压低平行分量，突出交叉偏振允许的非全对称模式。" },
+      { title: "选择定则", body: "Raman 强度由 e_s · R · e_i 决定，偏振矢量和 Raman 张量共同决定峰强。" },
+      { title: "读谱重点", body: "比较 VV/VH 中同一峰的强度变化，用于判别模对称性、晶轴和各向异性。" }
+    ];
+  }
+
+  if (layoutId === "ramanPolarized") {
+    return [
+      { title: "扫描变量", body: "旋转 HWP 改变样品处入射偏振，检偏器选择散射偏振投影。" },
+      { title: "物理含义", body: "强度随角度变化来自 Raman 张量和晶轴方向，而不是激光功率本身变化。" },
+      { title: "读图重点", body: "四瓣、两瓣或周期性节点用于定位晶体主轴和声子对称性。" }
+    ];
+  }
+
+  if (layoutId === "plIntro" || layoutId === "plStandard") {
+    return [
+      { title: "测量目标", body: "读电子态辐射复合：峰位看跃迁能量，强度看辐射效率，峰宽看无序/温度/相互作用。" },
+      { title: "关键机制", body: "hνexc 大于带隙后产生载流子，弛豫后以激子、Trion 或缺陷态复合发光。" },
+      { title: "光路原因", body: "DM 分离激发和发光，LP 去除残余激发光，150 g/mm 光栅覆盖宽 PL 包络。" }
+    ];
+  }
+
+  if (layoutId === "plPolarized") {
+    return [
+      { title: "扫描变量", body: "HWP 调节线偏振方向，检偏器选择发光投影，得到 I∥ 与 I⟂。" },
+      { title: "物理含义", body: "DOLP 反映低对称晶体激子偶极方向、晶轴取向和发光各向异性。" },
+      { title: "读图重点", body: "比较角度扫描的最大/最小强度和主轴方向，不要只看单点强度。" }
+    ];
+  }
+
+  if (layoutId === "plValley") {
+    return [
+      { title: "扫描变量", body: "QWP 将线偏振转换为 σ⁺/σ⁻ 圆偏振，检偏器读取 QWP 转回的线偏振分量。" },
+      { title: "物理含义", body: "DOCP 衡量 K/K' 谷选择定则、谷寿命、温度退极化和 Zeeman 分裂。" },
+      { title: "读图重点", body: "比较 σ⁺/σ⁺、σ⁺/σ⁻、σ⁻/σ⁺、σ⁻/σ⁻ 四种通道，区分同手性和交叉手性信号。" }
+    ];
+  }
+
+  if (layoutId === "lifetime") {
+    return [
+      { title: "测量目标", body: "读发光强度随时间衰减，而不是只读稳态峰强。" },
+      { title: "关键机制", body: "脉冲激发给出时间零点，SPAD/TCSPC 统计单光子到达时间，拟合 I(t)=I0e^(-t/τ)。" },
+      { title: "读图重点", body: "τ 反映复合寿命；多指数衰减通常意味着缺陷、暗态、能量转移或多通道复合。" }
+    ];
+  }
+
+  if (layoutId === "shgIntro" || layoutId === "shgStandard") {
+    return [
+      { title: "测量目标", body: "读二阶非线性响应 χ(2)，判断反演对称性、层数奇偶和晶区取向。" },
+      { title: "关键机制", body: "两个 ω 光子相干合成一个 2ω 光子；这是虚能级过程，不是 PL 复合。" },
+      { title: "光路原因", body: "fs 激光提供高峰值场，短通/带通滤片去除 1064 nm，只保留 532 nm 倍频信号。" }
+    ];
+  }
+
+  if (layoutId === "shgPolarized") {
+    return [
+      { title: "扫描变量", body: "HWP 改变基频偏振，检偏器选择二倍频偏振输出。" },
+      { title: "物理含义", body: "I₂ω 由 χ(2) 张量、入射偏振、出射偏振和晶轴共同决定。" },
+      { title: "读图重点", body: "六瓣花形和节点方向可用于确定 D3h 晶体的 armchair/zigzag 方向。" }
+    ];
+  }
+
+  return [];
 }
 
 /**
