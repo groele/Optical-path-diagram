@@ -207,6 +207,9 @@ function renderPolarizerShape(c) {
 
     <!-- Label -->
     <text x="0" y="-48" class="component-label-text">${c.label} (${angle}°)</text>
+    
+    <!-- Rotating Highlight Ring -->
+    ${c.params?.isInteractive ? `<circle cx="0" cy="0" r="38" fill="none" class="rotating-mount-indicator" />` : ""}
   `;
 }
 
@@ -244,6 +247,9 @@ function renderWaveplateShape(c) {
     <text x="0" y="4" class="component-label-text" font-size="10.5px" font-weight="700" fill="var(--text-main)" transform="rotate(${-c.rotation || 0})">${isQwp ? "λ/4" : "λ/2"}</text>
     <!-- Label outside -->
     <text x="0" y="-50" class="component-label-text">${c.label} (${angle}°)</text>
+    
+    <!-- Rotating Highlight Ring -->
+    ${c.params?.isInteractive ? `<circle cx="0" cy="0" r="40" fill="none" class="rotating-mount-indicator" />` : ""}
   `;
 }
 
@@ -378,6 +384,10 @@ function renderSampleShape(c) {
 
   // 3. Central sample wafer and holder
   const labelY = isCryoActive ? 92 : 46;
+  
+  // Rotate the TMD flake based on the crystalAngle
+  const flakeRot = (c.params?.isInteractive && c.params.sliderId === "sampleAngle") ? state.crystalAngle : 0;
+  
   html += `
     <!-- Stage Block -->
     <rect x="-35" y="-12" width="70" height="24" rx="2" fill="var(--mount-fill)" stroke="var(--mount-stroke)" stroke-width="1.5" />
@@ -386,8 +396,17 @@ function renderSampleShape(c) {
     <rect x="-24" y="-18" width="48" height="2" fill="#0891b2" /> <!-- 300nm oxide layer -->
     
     <!-- TMD Flake (Flashing Irregular Polygon) -->
-    <polygon points="-8,-20 2,-23 10,-19 4,-17 -6,-18" fill="url(#flake-glow)" stroke="var(--primary-color)" stroke-width="1" />
+    <polygon points="-8,-20 2,-23 10,-19 4,-17 -6,-18" fill="url(#flake-glow)" stroke="var(--primary-color)" stroke-width="1" transform="rotate(${flakeRot}, 0, -19.4)" />
     
+    <!-- Rotating dial for crystal axis -->
+    ${(c.params?.isInteractive && c.params.sliderId === "sampleAngle") ? `
+      <g transform="translate(0, -19.4) rotate(${state.crystalAngle})">
+        <circle cx="0" cy="0" r="18" fill="none" stroke="var(--warning)" stroke-width="1" stroke-dasharray="3 2" class="rotating-mount-indicator" />
+        <line x1="0" y1="0" x2="18" y2="0" stroke="var(--warning)" stroke-width="1.2" />
+        <path d="M 18 0 L 13 -3 L 13 3 Z" fill="var(--warning)" />
+      </g>
+    ` : ""}
+
     <!-- Label shifted vertically to avoid overlaps -->
     <text x="0" y="${labelY}" class="component-label-text" font-weight="700">${c.label}</text>
   `;
@@ -475,6 +494,9 @@ function renderAnalyzerShape(c) {
 
     <!-- Label -->
     <text x="0" y="-48" class="component-label-text">${c.label} (${axisLabel})</text>
+
+    <!-- Rotating Highlight Ring -->
+    ${c.params?.isInteractive ? `<circle cx="0" cy="0" r="38" fill="none" class="rotating-mount-indicator" />` : ""}
   `;
 }
 

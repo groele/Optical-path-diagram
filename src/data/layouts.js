@@ -275,8 +275,8 @@ export const opticalLayouts = {
       { id: "laser-main", type: "laser", x: 160, y: 350, rotation: 0, label: "532nm 激发激光", params: { wavelength: "532 nm", mode: "CW" } },
       { id: "polarizer-input", type: "polarizer", x: 420, y: 350, rotation: 0, label: "起偏器 (P)", params: { angleDeg: 90, axisLabel: "V" } },
       { id: "beam-splitter-main", type: "beamsplitter", x: 700, y: 350, rotation: 0, label: "分束镜 (BS)" },
-      { id: "hwp-input", type: "waveplate", subtype: "HWP", x: 700, y: 470, rotation: 0, label: "旋转 HWP", params: { angleDeg: 0, isInteractive: true, sliderId: "hwpAngle" } },
-      { id: "objective-main", type: "objective", x: 700, y: 580, rotation: 0, label: "物镜 (50×)", params: { NA: "0.75" } },
+      { id: "hwp-input", type: "waveplate", subtype: "HWP", x: 700, y: 450, rotation: 0, label: "旋转 HWP", params: { angleDeg: 0, isInteractive: true, sliderId: "hwpAngle" } },
+      { id: "objective-main", type: "objective", x: 700, y: 610, rotation: 0, label: "物镜 (50×)", params: { NA: "0.75" } },
       { id: "sample-main", type: "sample", x: 700, y: 720, rotation: 0, label: "2D 样品 (MoS₂)", params: { material: "MoS₂", crystalAngle: 0, isInteractive: true, sliderId: "sampleAngle" } },
       { id: "filter-notch", type: "filter", subtype: "notch", x: 980, y: 350, rotation: 0, label: "陷波滤光片" },
       { id: "analyzer-output", type: "analyzer", x: 1180, y: 350, rotation: 0, label: "检偏器 (A)", params: { angleDeg: 90, isInteractive: true, sliderId: "analyzerAngle" } },
@@ -308,7 +308,7 @@ export const opticalLayouts = {
     annotations: [
       { id: "ann-prrs", type: "badge", x: 1040, y: 270, text: "极分辨偏振拉曼扫描" },
       { id: "ann-formula", type: "formula", x: 1060, y: 180, text: "E' 剪切模: I ∝ cos²(4θ_hwp - θ_A)" },
-      { id: "hwp-rotator", type: "rotator", x: 740, y: 470, text: "HWP 自动转台 (镜头-分束镜间)" },
+      { id: "hwp-rotator", type: "rotator", x: 740, y: 450, text: "HWP 自动转台 (镜头-分束镜间)" },
       { id: "analyzer-rotator", type: "rotator", x: 1200, y: 270, text: "检偏器转台 (平行/正交)" }
     ],
     info: {
@@ -406,8 +406,8 @@ export const opticalLayouts = {
       { id: "laser-main", type: "laser", x: 160, y: 350, rotation: 0, label: "532nm 激发激光", params: { wavelength: "532 nm", mode: "CW" } },
       { id: "polarizer-input", type: "polarizer", x: 420, y: 350, rotation: 0, label: "起偏器 (P)", params: { angleDeg: 90 } },
       { id: "dichroic-main", type: "dichroic", x: 700, y: 350, rotation: 0, label: "二向色镜 (DM)" },
-      { id: "hwp-output", type: "waveplate", subtype: "HWP", x: 700, y: 470, rotation: 0, label: "旋转 HWP", params: { angleDeg: 0, isInteractive: true, sliderId: "hwpAngle" } },
-      { id: "objective-main", type: "objective", x: 700, y: 580, rotation: 0, label: "物镜" },
+      { id: "hwp-output", type: "waveplate", subtype: "HWP", x: 700, y: 450, rotation: 0, label: "旋转 HWP", params: { angleDeg: 0, isInteractive: true, sliderId: "hwpAngle" } },
+      { id: "objective-main", type: "objective", x: 700, y: 610, rotation: 0, label: "物镜" },
       { id: "sample-main", type: "sample", x: 700, y: 720, rotation: 0, label: "各向异性 2D 样品", params: { material: "ReS₂", temperature: "300 K" } },
       { id: "filter-longpass", type: "filter", subtype: "long-pass", x: 960, y: 350, rotation: 0, label: "长通滤光片" },
       { id: "analyzer-output", type: "analyzer", x: 1180, y: 350, rotation: 0, label: "检偏器 (A)", params: { angleDeg: 90, isInteractive: true, sliderId: "analyzerAngle" } },
@@ -438,7 +438,7 @@ export const opticalLayouts = {
     ],
     annotations: [
       { id: "ann-dolp", type: "formula", x: 1060, y: 180, text: "DOLP = (I_∥ - I_⟂) / (I_∥ + I_⟂)" },
-      { id: "hwp-rotator", type: "rotator", x: 740, y: 470, text: "HWP 自动转台 (共享复用)" },
+      { id: "hwp-rotator", type: "rotator", x: 740, y: 450, text: "HWP 自动转台 (共享复用)" },
       { id: "analyzer-rotator", type: "rotator", x: 1200, y: 270, text: "检偏器转台" }
     ],
     info: {
@@ -462,8 +462,8 @@ export const opticalLayouts = {
       { id: "laser-main", type: "laser", x: 160, y: 350, rotation: 0, label: "532nm 连续激光器", params: { wavelength: "532 nm", mode: "CW" } },
       { id: "polarizer-input", type: "polarizer", x: 420, y: 350, rotation: 0, label: "起偏器 (P)", params: { angleDeg: 90 } },
       { id: "dichroic-main", type: "dichroic", x: 700, y: 350, rotation: 0, label: "二向色镜" },
-      { id: "qwp-input", type: "waveplate", subtype: "QWP", x: 700, y: 470, rotation: 0, label: "共享显微臂 QWP", params: { angleDeg: 45, isInteractive: true, sliderId: "qwpAngle" } },
-      { id: "objective-main", type: "objective", x: 700, y: 580, rotation: 0, label: "物镜" },
+      { id: "qwp-input", type: "waveplate", subtype: "QWP", x: 700, y: 450, rotation: 0, label: "共享显微臂 QWP", params: { angleDeg: 45, isInteractive: true, sliderId: "qwpAngle" } },
+      { id: "objective-main", type: "objective", x: 700, y: 610, rotation: 0, label: "物镜" },
       { id: "sample-main", type: "sample", x: 700, y: 720, rotation: 0, label: "TMD 样品 (低温强磁腔)", params: { material: "WSe₂", temperature: "1.7 K", field: "B = 0 T", hasCryostat: true, hasBField: true } },
       { id: "filter-longpass", type: "filter", subtype: "long-pass", x: 960, y: 350, rotation: 0, label: "长通滤光片" },
       { id: "analyzer-output", type: "analyzer", x: 1180, y: 350, rotation: 0, label: "检偏器 (A)", params: { angleDeg: 90 } },
@@ -495,7 +495,7 @@ export const opticalLayouts = {
     annotations: [
       { id: "ann-docp", type: "formula", x: 1060, y: 180, text: "DOCP = (I_σ⁺ - I_σ⁻) / (I_σ⁺ + I_σ⁻)" },
       { id: "ann-valley", type: "badge", x: 700, y: 270, text: "自旋谷定则保护" },
-      { id: "qwp-rotator", type: "rotator", x: 740, y: 470, text: "QWP 自动转台 (1/4波片复用)" },
+      { id: "qwp-rotator", type: "rotator", x: 740, y: 450, text: "QWP 自动转台 (1/4波片复用)" },
       { id: "analyzer-rotator", type: "rotator", x: 1200, y: 270, text: "检偏器转台" }
     ],
     info: {
@@ -593,8 +593,8 @@ export const opticalLayouts = {
       { id: "laser-main", type: "laser", x: 160, y: 350, rotation: 0, label: "1064nm fs飞秒激光", params: { wavelength: "1064 nm" } },
       { id: "polarizer-input", type: "polarizer", x: 420, y: 350, rotation: 0, label: "起偏器 (P)", params: { angleDeg: 90 } },
       { id: "beam-splitter-main", type: "beamsplitter", x: 700, y: 350, rotation: 0, label: "分束镜 (BS)" },
-      { id: "hwp-input", type: "waveplate", subtype: "HWP", x: 700, y: 470, rotation: 0, label: "共享旋转 HWP", params: { angleDeg: 0, isInteractive: true, sliderId: "hwpAngle" } },
-      { id: "objective-main", type: "objective", x: 700, y: 580, rotation: 0, label: "物镜" },
+      { id: "hwp-input", type: "waveplate", subtype: "HWP", x: 700, y: 450, rotation: 0, label: "共享旋转 HWP", params: { angleDeg: 0, isInteractive: true, sliderId: "hwpAngle" } },
+      { id: "objective-main", type: "objective", x: 700, y: 610, rotation: 0, label: "物镜" },
       { id: "sample-main", type: "sample", x: 700, y: 720, rotation: 0, label: "2D 样品 (MoS₂)", params: { material: "MoS₂", crystalAngle: 0, isInteractive: true, sliderId: "sampleAngle" } },
       { id: "filter-shortpass", type: "filter", subtype: "short-pass", x: 980, y: 350, rotation: 0, label: "短通波片" },
       { id: "filter-bandpass", type: "filter", subtype: "band-pass", x: 1140, y: 350, rotation: 0, label: "532nm 窄带滤片" },
@@ -635,7 +635,7 @@ export const opticalLayouts = {
     annotations: [
       { id: "ann-flower", type: "badge", x: 700, y: 270, text: "六瓣花形偏振各向异性" },
       { id: "ann-formula", type: "formula", x: 1060, y: 180, text: "I_2ω ∝ cos²(3θ_in)" },
-      { id: "hwp-rotator", type: "rotator", x: 740, y: 470, text: "HWP 自动转台 (共享复用)" },
+      { id: "hwp-rotator", type: "rotator", x: 740, y: 450, text: "HWP 自动转台 (共享复用)" },
       { id: "analyzer-rotator", type: "rotator", x: 1200, y: 270, text: "检偏器转台" }
     ],
     info: {

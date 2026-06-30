@@ -1,6 +1,7 @@
 /* src/render/renderBeam.js */
 
 import { calculatePolarizationChain, calculateRamanIntensity, calculateValleyPL, calculateSHGIntensity } from "../utils/opticsMath.js";
+import { opticalLayouts } from "../data/layouts.js";
 
 /**
  * Renders an optical beam path, focusing cones, and polarization state arrows.
@@ -21,21 +22,28 @@ export function renderBeam(beam, layoutId, state) {
     const isObjectiveSample = p1[0] === 700 && p1[1] === 350 && p2[0] === 700 && p2[1] === 720;
     const isSampleObjective = p1[0] === 700 && p1[1] === 720 && p2[0] === 700 && p2[1] === 350;
 
-    if (isObjectiveSample && beam.type === "excitation") {
-      const cone = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-      cone.setAttribute("points", `680,620 720,620 700,710`);
-      cone.setAttribute("class", "focusing-beam-excitation");
-      g.appendChild(cone);
-    } else if (isSampleObjective && beam.type === "signal") {
-      const cone = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-      cone.setAttribute("points", `700,710 678,620 722,620`);
-      
-      let coneClass = "focusing-beam-emission";
-      if (layoutId.startsWith("shg")) coneClass = "focusing-beam-shg";
-      else if (layoutId.startsWith("raman") || layoutId === "lifetime") fillRamanCone(cone);
-      
-      cone.setAttribute("class", coneClass);
-      g.appendChild(cone);
+    if (isObjectiveSample || isSampleObjective) {
+      const layout = opticalLayouts[layoutId];
+      const objective = layout?.components?.find(c => c.type === "objective");
+      const objY = objective ? objective.y : 580;
+      const coneTopY = objY + 40; // tip of objective housing
+
+      if (isObjectiveSample && beam.type === "excitation") {
+        const cone = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        cone.setAttribute("points", `680,${coneTopY} 720,${coneTopY} 700,710`);
+        cone.setAttribute("class", "focusing-beam-excitation");
+        g.appendChild(cone);
+      } else if (isSampleObjective && beam.type === "signal") {
+        const cone = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        cone.setAttribute("points", `700,710 678,${coneTopY} 722,${coneTopY}`);
+        
+        let coneClass = "focusing-beam-emission";
+        if (layoutId.startsWith("shg")) coneClass = "focusing-beam-shg";
+        else if (layoutId.startsWith("raman") || layoutId === "lifetime") fillRamanCone(cone);
+        
+        cone.setAttribute("class", coneClass);
+        g.appendChild(cone);
+      }
     }
   }
 
