@@ -332,19 +332,46 @@ function renderLiveMathPreview(layoutId) {
   div.style.fontSize = "0.75rem";
 
   let html = "";
-  if (layoutId === "ramanStandard") {
+  if (layoutId === "ramanStandard" || layoutId === "ramanIntro") {
     html = `
       <div style="color:var(--text-main); font-weight:600; margin-bottom:4px;">标准拉曼光谱测量：</div>
       <div>激发波长 : 532 nm</div>
       <div>分光光栅 : 1800 g/mm</div>
       <div style="margin-top:4px; color:var(--success)">主要声子模式 : E' (~383 cm⁻¹), A₁g (~408 cm⁻¹)</div>
     `;
+  } else if (layoutId === "ramanLinear") {
+    const res = Math.pow(Math.cos((state.inputAngle - state.analyzerAngle) * Math.PI / 180), 2);
+    html = `
+      <div style="color:var(--text-main); font-weight:600; margin-bottom:4px;">线偏振拉曼选择定则：</div>
+      <div>激发偏振角 θ_i : ${state.inputAngle.toFixed(1)}°</div>
+      <div>检偏分析角 θ_s : ${state.analyzerAngle}°</div>
+      <div>夹角调制因数 : cos²(θ_i - θ_s)</div>
+      <div style="margin-top:4px; color:var(--success)">理论探测光强 I ∝ ${res.toFixed(4)}</div>
+    `;
+  } else if (layoutId === "ramanVV" || layoutId === "ramanVH") {
+    const isVV = layoutId === "ramanVV";
+    const mode = isVV ? "A1g (全对称)" : "E' (剪切)";
+    const res = calculateRamanIntensity({
+      mode: isVV ? "A1g" : "E",
+      inputPolAngle: 90,
+      hwpAngle: 0,
+      analyzerPolAngle: isVV ? 90 : 0,
+      crystalAngle: state.crystalAngle,
+      isDoublePass: false
+    });
+    html = `
+      <div style="color:var(--text-main); font-weight:600; margin-bottom:4px;">固定偏振拉曼强度仿真：</div>
+      <div>激发偏振角 θ_i : 90.0° (垂直 V)</div>
+      <div>检偏分析角 θ_s : ${isVV ? "90.0° (垂直 V)" : "0.0° (水平 H)"}</div>
+      <div>当前贡献声子 : ${mode}</div>
+      <div style="margin-top:4px; color:var(--success)">理论探测光强 I ∝ ${res.toFixed(4)}</div>
+    `;
   } else if (layoutId.startsWith("raman")) {
     const incPol = (2 * state.hwpAngle - 90) % 180;
     const angleIn = incPol < 0 ? incPol + 180 : incPol;
-    const mode = (layoutId === "ramanVV" || layoutId === "ramanPolarized" && state.analyzerAngle === 90) ? "A1g (全对称)" : "E' (剪切)";
+    const mode = (layoutId === "ramanPolarized" && state.analyzerAngle === 90) ? "A1g (全对称)" : "E' (剪切)";
     const res = calculateRamanIntensity({
-      mode: (layoutId === "ramanVV" || layoutId === "ramanPolarized" && state.analyzerAngle === 90) ? "A1g" : "E",
+      mode: (layoutId === "ramanPolarized" && state.analyzerAngle === 90) ? "A1g" : "E",
       inputPolAngle: angleIn,
       analyzerPolAngle: state.analyzerAngle,
       crystalAngle: state.crystalAngle
@@ -356,6 +383,20 @@ function renderLiveMathPreview(layoutId) {
       <div>检偏分析角 θ_s : ${state.analyzerAngle}°</div>
       <div>主要贡献声子 : ${mode}</div>
       <div style="margin-top:4px; color:var(--success)">理论探测光强 I ∝ ${res.toFixed(4)}</div>
+    `;
+  } else if (layoutId === "plStandard" || layoutId === "plIntro") {
+    html = `
+      <div style="color:var(--text-main); font-weight:600; margin-bottom:4px;">光致发光能带参数：</div>
+      <div>激发能 (532 nm) : 2.33 eV</div>
+      <div>发光极 (MoS₂) : 1.85 eV (~670 nm)</div>
+      <div style="margin-top:4px; color:var(--success)">状态 : 辐射激子复合活跃 (Eg ~ 1.85 eV)</div>
+    `;
+  } else if (layoutId === "plPolarized") {
+    html = `
+      <div style="color:var(--text-main); font-weight:600; margin-bottom:4px;">各向异性 PL 偏振：</div>
+      <div>激发偏振角 : ${(2 * state.hwpAngle - 90).toFixed(0)}°</div>
+      <div>检偏分析角 : ${state.analyzerAngle}°</div>
+      <div style="margin-top:4px; color:var(--success)">各向异性 DOLP 仿真活跃</div>
     `;
   } else if (layoutId === "plValley") {
     const isSp = state.qwpAngle === 45;
@@ -393,6 +434,41 @@ function renderLiveMathPreview(layoutId) {
       <div>倍频分析 θ_out : ${state.analyzerAngle}°</div>
       <div>测试几何 : ${modeText}</div>
       <div style="margin-top:4px; color:var(--success)">倍频光强 I(2ω) ∝ ${res.toFixed(4)}</div>
+    `;
+  } else if (layoutId === "lifetime") {
+    const tau = state.tauValue;
+    // Generate exponential decay curve points for SVG path
+    let pathPoints = "";
+    for (let t = 0; t <= 8; t += 0.25) {
+      const sx = 30 + (t / 8) * 190;
+      const val = Math.exp(-t / tau);
+      const sy = 80 - val * 65;
+      if (t === 0) {
+        pathPoints += `M ${sx} ${sy}`;
+      } else {
+        pathPoints += ` L ${sx} ${sy}`;
+      }
+    }
+
+    html = `
+      <div style="color:var(--text-main); font-weight:600; margin-bottom:4px;">时间分辨荧光寿命动力学：</div>
+      <div>本征衰减寿命 τ : ${tau.toFixed(1)} ns</div>
+      <div>衰减方程 : I(t) = I₀ · e^(-t/τ)</div>
+      <div style="margin-top:8px; margin-bottom:4px; font-weight:600; color:var(--text-secondary);">瞬态衰减谱线 (TRPL Decay):</div>
+      <svg width="240" height="96" style="background:#0f172a; border-radius:6px; border:1px solid var(--border-card); margin-top:4px; display:block;">
+        <!-- Grid lines -->
+        <line x1="30" y1="47.5" x2="220" y2="47.5" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <line x1="125" y1="15" x2="125" y2="80" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <!-- Axes -->
+        <line x1="30" y1="80" x2="220" y2="80" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+        <line x1="30" y1="15" x2="30" y2="80" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+        <!-- Decay Curve -->
+        <path d="${pathPoints}" fill="none" stroke="#ec4899" stroke-width="2" style="filter:drop-shadow(0 0 3px rgba(236,72,153,0.4))"/>
+        <!-- Labeling -->
+        <text x="220" y="90" font-size="8px" fill="rgba(255,255,255,0.4)" text-anchor="end">t (ns)</text>
+        <text x="35" y="24" font-size="8px" fill="rgba(255,255,255,0.4)">I(t)</text>
+        <text x="130" y="32" font-size="10px" fill="#ec4899" font-weight="700" text-anchor="middle">τ = ${tau.toFixed(1)} ns</text>
+      </svg>
     `;
   } else if (layoutId === "linearPolDemo") {
     const outAngle = (2 * state.hwpAngle - state.inputAngle) % 180;

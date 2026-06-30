@@ -121,8 +121,31 @@
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+}
+
+.syllabus-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  opacity: 0.5;
+  min-width: 22px;
+  transition: opacity 0.2s ease;
+}
+
+.layout-card.active .syllabus-number {
+  opacity: 1;
+  text-shadow: 0 0 8px var(--primary-glow-shadow);
+}
+
+.syllabus-text {
+  display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
+  flex: 1;
 }
 
 .layout-card:hover {

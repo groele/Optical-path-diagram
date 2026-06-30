@@ -38,16 +38,19 @@ export function renderAnnotation(annotation, layoutId) {
     let mathText = annotation.text;
     let computedDetail = "";
 
-    // Live calculation updates based on layout
-    if (layoutId.startsWith("raman")) {
-      const isVV = layoutId === "ramanVV";
+    if (layoutId === "ramanLinear") {
+      const res = Math.pow(Math.cos((state.inputAngle - state.analyzerAngle) * Math.PI / 180), 2);
+      computedDetail = `I = ${res.toFixed(3)}`;
+    } else if (layoutId.startsWith("raman") && layoutId !== "ramanStandard" && layoutId !== "ramanIntro") {
+      const mode = (layoutId === "ramanVV" || layoutId === "ramanPolarized" && state.analyzerAngle === 90) ? "A1g" : "E";
+      const isFixed = layoutId === "ramanVV" || layoutId === "ramanVH";
       const intensity = calculateRamanIntensity({
-        mode: isVV ? "A1g" : "E",
+        mode,
         inputPolAngle: 90, // V input
-        hwpAngle: state.hwpAngle,
-        analyzerPolAngle: state.analyzerAngle,
+        hwpAngle: isFixed ? 0 : state.hwpAngle,
+        analyzerPolAngle: layoutId === "ramanVV" ? 90 : (layoutId === "ramanVH" ? 0 : state.analyzerAngle),
         crystalAngle: state.crystalAngle,
-        isDoublePass: true
+        isDoublePass: !isFixed
       });
       computedDetail = `I = ${intensity.toFixed(3)}`;
     } else if (layoutId === "plValley") {
@@ -86,6 +89,8 @@ export function renderAnnotation(annotation, layoutId) {
         isDoublePass: false
       });
       computedDetail = `I = ${out.transmission.toFixed(3)}`;
+    } else if (layoutId === "lifetime") {
+      computedDetail = `τ = ${state.tauValue.toFixed(1)} ns`;
     }
 
     const cardWidth = 280;

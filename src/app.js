@@ -11,63 +11,97 @@ export function renderLayoutList(container, setLayoutCallback) {
   if (!container) return;
   container.innerHTML = "";
 
-  // The 12-item syllabus order
-  const syllabusOrder = [
-    "overview",
-    "ramanStandard",
-    "ramanPolarized",
-    "plStandard",
-    "plPolarized",
-    "plValley",
-    "shgPolarized",
-    "lifetime",
-    "laserIntro",
-    "spectrometerIntro",
-    "componentLib",
-    "signalFlow"
+  const groups = [
+    {
+      title: "Ⅰ. 平台总览与理论基础",
+      color: "#3b82f6", // Blue
+      layouts: ["overview", "laserIntro", "spectrometerIntro", "componentLib"]
+    },
+    {
+      title: "Ⅱ. 显微拉曼光谱测试",
+      color: "#10b981", // Green (532nm)
+      layouts: ["ramanIntro", "ramanStandard", "ramanVV", "ramanVH", "ramanPolarized"]
+    },
+    {
+      title: "Ⅲ. 光致发光与寿命测试",
+      color: "#ec4899", // Pink
+      layouts: ["plIntro", "plStandard", "plPolarized", "plValley", "lifetime"]
+    },
+    {
+      title: "Ⅳ. 非线性倍频测试 (SHG)",
+      color: "#f97316", // Orange (1064nm -> 532nm)
+      layouts: ["shgIntro", "shgPolarized"]
+    },
+    {
+      title: "Ⅴ. 硬件数据集成链路",
+      color: "#8b5cf6", // Purple
+      layouts: ["signalFlow"]
+    }
   ];
 
-  syllabusOrder.forEach((layoutId, idx) => {
-    const layout = opticalLayouts[layoutId];
-    if (!layout) return;
+  let absoluteIndex = 1;
 
-    const card = document.createElement("div");
-    card.className = `layout-card ${state.currentLayoutId === layout.id ? "active" : ""}`;
-    card.setAttribute("data-id", layout.id);
+  groups.forEach(group => {
+    // 1. Render Group Header
+    const header = document.createElement("div");
+    header.className = "category-title";
+    header.style.color = group.color;
+    header.style.marginTop = "14px";
+    header.style.marginBottom = "6px";
+    header.style.fontWeight = "800";
+    header.style.fontSize = "0.75rem";
+    header.style.letterSpacing = "0.5px";
+    header.textContent = group.title;
+    container.appendChild(header);
 
-    // Number prefix
-    const numPrefix = document.createElement("div");
-    numPrefix.className = "syllabus-number";
-    numPrefix.textContent = (idx + 1).toString().padStart(2, "0");
-    card.appendChild(numPrefix);
+    // 2. Render Cards in this Group
+    group.layouts.forEach(layoutId => {
+      const layout = opticalLayouts[layoutId];
+      if (!layout) return;
 
-    const textContainer = document.createElement("div");
-    textContainer.className = "syllabus-text";
+      const card = document.createElement("div");
+      card.className = `layout-card ${state.currentLayoutId === layout.id ? "active" : ""}`;
+      card.setAttribute("data-id", layout.id);
+      
+      // Color-coding left border for differentiation
+      card.style.borderLeft = `4px solid ${group.color}`;
 
-    const h4 = document.createElement("h4");
-    h4.textContent = layout.title;
-    textContainer.appendChild(h4);
+      // Number prefix
+      const numPrefix = document.createElement("div");
+      numPrefix.className = "syllabus-number";
+      numPrefix.style.color = group.color;
+      numPrefix.textContent = absoluteIndex.toString().padStart(2, "0");
+      card.appendChild(numPrefix);
 
-    const p = document.createElement("p");
-    p.textContent = layout.subtitle;
-    textContainer.appendChild(p);
+      const textContainer = document.createElement("div");
+      textContainer.className = "syllabus-text";
 
-    card.appendChild(textContainer);
+      const h4 = document.createElement("h4");
+      h4.textContent = layout.title;
+      textContainer.appendChild(h4);
 
-    // Event listener to switch layout
-    card.addEventListener("click", () => {
-      document.querySelectorAll(".layout-card").forEach(c => c.classList.remove("active"));
-      card.classList.add("active");
-      setLayoutCallback(layout.id);
+      const p = document.createElement("p");
+      p.textContent = layout.subtitle;
+      textContainer.appendChild(p);
+
+      card.appendChild(textContainer);
+
+      // Event listener to switch layout
+      card.addEventListener("click", () => {
+        document.querySelectorAll(".layout-card").forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+        setLayoutCallback(layout.id);
+      });
+
+      container.appendChild(card);
+      absoluteIndex++;
     });
-
-    container.appendChild(card);
   });
 
   // Update layout total count in sidebar header badge
   const countBadge = document.querySelector("#layout-count");
   if (countBadge) {
-    countBadge.textContent = "12 个专题";
+    countBadge.textContent = "17 个专题";
   }
 }
 

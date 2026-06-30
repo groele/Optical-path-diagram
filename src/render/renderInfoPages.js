@@ -64,6 +64,15 @@ export function renderInfoPage(svg, pageId) {
     case "signalFlow":
       renderSignalFlowPage(svg);
       break;
+    case "ramanIntro":
+      renderRamanIntroPage(svg);
+      break;
+    case "plIntro":
+      renderPlIntroPage(svg);
+      break;
+    case "shgIntro":
+      renderShgIntroPage(svg);
+      break;
     default:
       renderDefaultInfoPage(svg, pageId);
   }
@@ -764,4 +773,506 @@ function drawBeamPath(parent, points, color, width, hasArrow) {
     arrow.setAttribute("fill", color);
     parent.appendChild(arrow);
   }
+}
+
+// 6. Raman Intro Page - Testing Principle
+function renderRamanIntroPage(svg) {
+  drawText(svg, "拉曼非弹性散射测试原理 (Raman Scattering Principle)", 800, 80, { fontSize: "28px", fontWeight: "800", textAnchor: "middle", fill: "var(--primary-color)" });
+  drawText(svg, "光子与晶格声子相互作用能级图及共焦检测示意", 800, 115, { fontSize: "15px", fill: "var(--text-secondary)", textAnchor: "middle" });
+
+  // Draw two split panels: Left (Energy Levels), Right (Confocal Filter path)
+  const leftPanel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  leftPanel.setAttribute("x", "120");
+  leftPanel.setAttribute("y", "170");
+  leftPanel.setAttribute("width", "650");
+  leftPanel.setAttribute("height", "620");
+  leftPanel.setAttribute("fill", "var(--bg-card)");
+  leftPanel.setAttribute("stroke", "var(--border-card)");
+  leftPanel.setAttribute("stroke-width", "2");
+  leftPanel.setAttribute("rx", "12");
+  svg.appendChild(leftPanel);
+
+  const rightPanel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  rightPanel.setAttribute("x", "830");
+  rightPanel.setAttribute("y", "170");
+  rightPanel.setAttribute("width", "650");
+  rightPanel.setAttribute("height", "620");
+  rightPanel.setAttribute("fill", "var(--bg-card)");
+  rightPanel.setAttribute("stroke", "var(--border-card)");
+  rightPanel.setAttribute("stroke-width", "2");
+  rightPanel.setAttribute("rx", "12");
+  svg.appendChild(rightPanel);
+
+  // --- Draw Energy Levels on Left ---
+  drawText(svg, "拉曼散射能级跃迁图 (Jablonski Diagram)", 445, 210, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
+
+  // Level lines
+  const ground0 = 620;
+  const ground1 = 540;
+  const virtual = 260;
+
+  // Draw Solid Level Lines
+  drawLevelLine(svg, 160, ground0, 570, "基态能级 v = 0");
+  drawLevelLine(svg, 160, ground1, 570, "基态振动激发态 v = 1");
+  drawDashedLevelLine(svg, 160, virtual, 570, "虚能级 (Virtual State)");
+
+  // Arrows
+  // 1. Excitation (532nm Green)
+  drawArrowUp(svg, 210, ground0, virtual, "var(--laser-green)", "hν₀ 激发");
+  // 2. Rayleigh (532nm Green)
+  drawArrowDown(svg, 290, virtual, ground0, "var(--laser-green)", "hν₀ 弹性反射");
+  // 3. Stokes (Purple)
+  drawArrowDown(svg, 380, virtual, ground1, "var(--beam-raman)", "hν₀ - hν_ph (Stokes)");
+  // 4. Anti-Stokes
+  drawArrowUp(svg, 480, ground1, virtual, "#38bdf8", "");
+  drawArrowDown(svg, 520, virtual, ground0, "#38bdf8", "hν₀ + hν_ph (Anti-Stokes)");
+
+  // Legend Text
+  drawText(svg, "频移量 Δν = |ν₀ - ν_scattered| 对应声子能量", 445, 750, { fontSize: "13px", fontWeight: "600", textAnchor: "middle", fill: "var(--text-secondary)" });
+
+
+  // --- Draw Confocal Filter Path on Right ---
+  drawText(svg, "共焦拉曼检测光路原理 (Confocal Path Scheme)", 1155, 210, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
+
+  // Draw schematic components
+  drawConfocalConf(svg, 900, 350, 1155, 540, 1400, 350);
+
+  // Explanation notes below
+  let currentY = 650;
+  const bulletPoints = [
+    "• 斯托克斯能级：光子碰撞晶格，将一部分能量转移给声子振动，出射光子能量降低，对应特征拉曼频移。",
+    "• 弹性瑞利散射：强度比拉曼非弹性散射强 10⁶ - 10⁸ 倍！",
+    "• Notch 陷波滤光片：必须放在收集路径上，精准阻断极强 532nm 瑞利光，只让微弱的拉曼偏离光子通过。",
+    "• 高色散光栅 (1800g/mm)：分光分辨极细微的频移（分辨率达几 cm⁻¹，对应 0.1 meV 声子能级）。"
+  ];
+  bulletPoints.forEach(pt => {
+    drawWrappedText(svg, pt, 860, currentY, 590, 18, { fontSize: "12px", fill: "var(--text-secondary)" });
+    currentY += 34;
+  });
+}
+
+// 7. PL Intro Page - Testing Principle
+function renderPlIntroPage(svg) {
+  drawText(svg, "光致发光测试电子跃迁原理 (Photoluminescence Principle)", 800, 80, { fontSize: "28px", fontWeight: "800", textAnchor: "middle", fill: "var(--primary-color)" });
+  drawText(svg, "半导体能带带隙吸收与辐射发射复合过程", 800, 115, { fontSize: "15px", fill: "var(--text-secondary)", textAnchor: "middle" });
+
+  const leftPanel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  leftPanel.setAttribute("x", "120");
+  leftPanel.setAttribute("y", "170");
+  leftPanel.setAttribute("width", "650");
+  leftPanel.setAttribute("height", "620");
+  leftPanel.setAttribute("fill", "var(--bg-card)");
+  leftPanel.setAttribute("stroke", "var(--border-card)");
+  leftPanel.setAttribute("stroke-width", "2");
+  leftPanel.setAttribute("rx", "12");
+  svg.appendChild(leftPanel);
+
+  const rightPanel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  rightPanel.setAttribute("x", "830");
+  rightPanel.setAttribute("y", "170");
+  rightPanel.setAttribute("width", "650");
+  rightPanel.setAttribute("height", "620");
+  rightPanel.setAttribute("fill", "var(--bg-card)");
+  rightPanel.setAttribute("stroke", "var(--border-card)");
+  rightPanel.setAttribute("stroke-width", "2");
+  rightPanel.setAttribute("rx", "12");
+  svg.appendChild(rightPanel);
+
+  // --- Draw Bands on Left ---
+  drawText(svg, "半导体能带结构吸收与荧光发射 (Band Diagram)", 445, 215, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
+
+  // CB (Conduction Band)
+  const cb = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  cb.setAttribute("x", "180");
+  cb.setAttribute("y", "260");
+  cb.setAttribute("width", "380");
+  cb.setAttribute("height", "80");
+  cb.setAttribute("fill", "rgba(56, 189, 248, 0.08)");
+  cb.setAttribute("stroke", "#38bdf8");
+  cb.setAttribute("stroke-width", "1.5");
+  cb.setAttribute("rx", "6");
+  svg.appendChild(cb);
+  drawText(svg, "导带 (Conduction Band)", 370, 310, { fontSize: "13px", fontWeight: "700", fill: "#38bdf8", textAnchor: "middle" });
+
+  // VB (Valence Band)
+  const vb = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  vb.setAttribute("x", "180");
+  vb.setAttribute("y", "540");
+  vb.setAttribute("width", "380");
+  vb.setAttribute("height", "80");
+  vb.setAttribute("fill", "rgba(239, 68, 68, 0.08)");
+  vb.setAttribute("stroke", "#ef4444");
+  vb.setAttribute("stroke-width", "1.5");
+  vb.setAttribute("rx", "6");
+  svg.appendChild(vb);
+  drawText(svg, "价带 (Valence Band)", 370, 590, { fontSize: "13px", fontWeight: "700", fill: "#ef4444", textAnchor: "middle" });
+
+  // Band Gap Label
+  drawText(svg, "带隙 Eg (Band Gap)", 370, 445, { fontSize: "13px", fontWeight: "700", fill: "var(--text-muted)", textAnchor: "middle" });
+
+  // Arrows
+  // 1. Excitation (532nm Green)
+  drawArrowUp(svg, 240, 540, 260, "var(--laser-green)", "hν_exc (吸收)");
+  // 2. Non-radiative relaxation (Curly loops)
+  drawRelaxationHelix(svg, 240, 260, 340);
+  drawRelaxationHelix(svg, 500, 620, 540);
+  // 3. Recombination PL (Red emission)
+  drawArrowDown(svg, 500, 340, 540, "var(--beam-pl)", "hν_PL 发射");
+
+  drawText(svg, "能级守恒: 发射荧光能量 hν_PL = E_g (小于激发能 hν_exc)", 445, 750, { fontSize: "13px", fontWeight: "600", textAnchor: "middle", fill: "var(--text-secondary)" });
+
+
+  // --- Draw PL Testing Layout on Right ---
+  drawText(svg, "显微 PL 测试系统配置 (PL Config)", 1155, 215, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
+
+  drawPlconf(svg, 900, 350, 1155, 540, 1400, 350);
+
+  // Explanation notes below
+  let py = 650;
+  const plBulletPoints = [
+    "• 辐射复合发光：半导体吸收光子后，导带电子弛豫落入价带顶空穴，复合时以荧光形式放出带隙能量 Eg。",
+    "• 激子/Trion复合：二维 TMDs (如单层 MoS₂) 具有强的库伦相互作用，激发极易形成激子 (Exciton) 和带电激子 (Trion) 并从这些通道发光。",
+    "• 宽带分光 (150g/mm)：PL 的发光范围较宽 (如 600-800nm)，光谱仪使用 150 lines/mm 低色散刻线，能保证 CCD 一次捕获完整的 PL 包络峰线。"
+  ];
+  plBulletPoints.forEach(pt => {
+    drawWrappedText(svg, pt, 860, py, 590, 18, { fontSize: "12px", fill: "var(--text-secondary)" });
+    py += 34;
+  });
+}
+
+// 8. SHG Intro Page - Testing Principle
+function renderShgIntroPage(svg) {
+  drawText(svg, "非线性光学二次谐波发生原理 (Second Harmonic Theory)", 800, 80, { fontSize: "28px", fontWeight: "800", textAnchor: "middle", fill: "var(--primary-color)" });
+  drawText(svg, "双光子相干合成与晶格空间反演对称性破缺探测机制", 800, 115, { fontSize: "15px", fill: "var(--text-secondary)", textAnchor: "middle" });
+
+  const leftPanel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  leftPanel.setAttribute("x", "120");
+  leftPanel.setAttribute("y", "170");
+  leftPanel.setAttribute("width", "650");
+  leftPanel.setAttribute("height", "620");
+  leftPanel.setAttribute("fill", "var(--bg-card)");
+  leftPanel.setAttribute("stroke", "var(--border-card)");
+  leftPanel.setAttribute("stroke-width", "2");
+  leftPanel.setAttribute("rx", "12");
+  svg.appendChild(leftPanel);
+
+  const rightPanel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  rightPanel.setAttribute("x", "830");
+  rightPanel.setAttribute("y", "170");
+  rightPanel.setAttribute("width", "650");
+  rightPanel.setAttribute("height", "620");
+  rightPanel.setAttribute("fill", "var(--bg-card)");
+  rightPanel.setAttribute("stroke", "var(--border-card)");
+  rightPanel.setAttribute("stroke-width", "2");
+  rightPanel.setAttribute("rx", "12");
+  svg.appendChild(rightPanel);
+
+  // --- Draw SHG energy levels on Left ---
+  drawText(svg, "SHG 能级图与虚拟激发过程 (SHG Levels)", 445, 215, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
+
+  const shgGround = 600;
+  const shgVirt1 = 425;
+  const shgVirt2 = 250;
+
+  drawLevelLine(svg, 160, shgGround, 570, "基态 E_0");
+  drawDashedLevelLine(svg, 160, shgVirt1, 570, "虚拟能级 1");
+  drawDashedLevelLine(svg, 160, shgVirt2, 570, "虚拟能级 2");
+
+  // Arrows
+  // Two omega photons
+  drawArrowUp(svg, 260, shgGround, shgVirt1, "var(--laser-ir)", "基频 ω (1064nm)");
+  drawArrowUp(svg, 260, shgVirt1, shgVirt2, "var(--laser-ir)", "基频 ω (1064nm)");
+  // One 2omega photon return
+  drawArrowDown(svg, 460, shgVirt2, shgGround, "var(--laser-green)", "倍频二倍频 2ω (532nm)");
+
+  drawText(svg, "瞬间相干能量融合过程: E_SHG = 2 · E_fundamental", 445, 750, { fontSize: "13px", fontWeight: "600", textAnchor: "middle", fill: "var(--text-secondary)" });
+
+
+  // --- Draw SHG symmetry mapping on Right ---
+  drawText(svg, "晶格反演对称中心探测原理 (Inversion Symmetry)", 1155, 215, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
+
+  drawShgSymmetryGraph(svg, 1155, 360);
+
+  // Explanation notes below
+  let sy = 635;
+  const shgBulletPoints = [
+    "• 二阶非线性过程：两个基频光子在超快强电场中被同时相干吸收入虚能级，瞬时相干融合成一个 2ω 的倍频光子发射出来。",
+    "• 反演对称性敏感：SHG 电偶极矩极化 P(2) = x(2) : EE。如果材料具有反演对称中心，则 x(2) = 0。因此 SHG 可作为探测对称中心破缺（如单层 MoS₂）的极灵敏探针。",
+    "• 偏振旋转各向异性：通过偏振面扫查，二倍频极性图谱呈现具有 D₃ₕ 晶面结构特征的六瓣花形偏振花图样，用于精准测定晶格偏角朝向。"
+  ];
+  shgBulletPoints.forEach(pt => {
+    drawWrappedText(svg, pt, 860, sy, 590, 18, { fontSize: "12px", fill: "var(--text-secondary)" });
+    sy += 34;
+  });
+}
+
+// Helpers for the new drawings
+function drawLevelLine(parent, x1, y, x2, label) {
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line.setAttribute("x1", x1.toString());
+  line.setAttribute("y1", y.toString());
+  line.setAttribute("x2", x2.toString());
+  line.setAttribute("y2", y.toString());
+  line.setAttribute("stroke", "var(--text-main)");
+  line.setAttribute("stroke-width", "2.5");
+  parent.appendChild(line);
+
+  drawText(parent, label, x2 + 10, y + 4, { fontSize: "11px", fill: "var(--text-muted)" });
+}
+
+function drawDashedLevelLine(parent, x1, y, x2, label) {
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line.setAttribute("x1", x1.toString());
+  line.setAttribute("y1", y.toString());
+  line.setAttribute("x2", x2.toString());
+  line.setAttribute("y2", y.toString());
+  line.setAttribute("stroke", "var(--text-muted)");
+  line.setAttribute("stroke-width", "1.5");
+  line.setAttribute("stroke-dasharray", "4 4");
+  parent.appendChild(line);
+
+  drawText(parent, label, x2 + 10, y + 4, { fontSize: "11px", fill: "var(--text-secondary)" });
+}
+
+function drawArrowUp(parent, x, yStart, yEnd, color, label) {
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", `M ${x} ${yStart} L ${x} ${yEnd}`);
+  path.setAttribute("stroke", color);
+  path.setAttribute("stroke-width", "2.5");
+  path.setAttribute("fill", "none");
+  parent.appendChild(path);
+
+  const head = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  head.setAttribute("d", `M ${x} ${yEnd} L ${x - 5} ${yEnd + 10} L ${x + 5} ${yEnd + 10} Z`);
+  head.setAttribute("fill", color);
+  parent.appendChild(head);
+
+  if (label) {
+    drawText(parent, label, x - 12, (yStart + yEnd) / 2, { fontSize: "11px", fill: color, textAnchor: "end" });
+  }
+}
+
+function drawArrowDown(parent, x, yStart, yEnd, color, label) {
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", `M ${x} ${yStart} L ${x} ${yEnd}`);
+  path.setAttribute("stroke", color);
+  path.setAttribute("stroke-width", "2.5");
+  path.setAttribute("fill", "none");
+  parent.appendChild(path);
+
+  const head = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  head.setAttribute("d", `M ${x} ${yEnd} L ${x - 5} ${yEnd - 10} L ${x + 5} ${yEnd - 10} Z`);
+  head.setAttribute("fill", color);
+  parent.appendChild(head);
+
+  if (label) {
+    drawText(parent, label, x + 12, (yStart + yEnd) / 2, { fontSize: "11px", fill: color, textAnchor: "start" });
+  }
+}
+
+function drawRelaxationHelix(parent, x, yStart, yEnd) {
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  let d = `M ${x} ${yStart}`;
+  let cy = yStart;
+  const step = 4;
+  const amplitude = 5;
+  let rad = 0;
+  while (cy < yEnd) {
+    cy += step;
+    rad += 0.5;
+    const cx = x + amplitude * Math.sin(rad);
+    d += ` L ${cx} ${cy}`;
+  }
+  path.setAttribute("d", d);
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke", "var(--text-muted)");
+  path.setAttribute("stroke-width", "1.5");
+  parent.appendChild(path);
+}
+
+function drawConfocalConf(parent, lx, ly, cx, cy, rx, ry) {
+  const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+  // Draw lens
+  const lens = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+  lens.setAttribute("cx", cx.toString());
+  lens.setAttribute("cy", cy.toString());
+  lens.setAttribute("rx", "12");
+  lens.setAttribute("ry", "40");
+  lens.setAttribute("class", "component-glass");
+  g.appendChild(lens);
+  drawText(g, "物镜", cx, cy - 50, { fontSize: "11px", textAnchor: "middle" });
+
+  // Draw Sample
+  const sample = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  sample.setAttribute("x", (cx - 40).toString());
+  sample.setAttribute("y", (cy + 120).toString());
+  sample.setAttribute("width", "80");
+  sample.setAttribute("height", "10");
+  sample.setAttribute("fill", "var(--primary-glow-bg)");
+  sample.setAttribute("stroke", "var(--primary-color)");
+  g.appendChild(sample);
+  drawText(g, "焦平面样品", cx, cy + 150, { fontSize: "11.5px", textAnchor: "middle", fill: "var(--primary-color)" });
+
+  // Beam cone converging
+  const coneExc = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+  coneExc.setAttribute("points", `${cx - 10},${cy} ${cx + 10},${cy} ${cx},${cy + 120}`);
+  coneExc.setAttribute("fill", "rgba(16, 185, 129, 0.15)");
+  g.appendChild(coneExc);
+
+  // Draw Rayleigh vs Raman beam separation
+  const filter = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  filter.setAttribute("x", rx.toString());
+  filter.setAttribute("y", (ry - 30).toString());
+  filter.setAttribute("width", "10");
+  filter.setAttribute("height", "60");
+  filter.setAttribute("fill", "rgba(239, 68, 68, 0.2)");
+  filter.setAttribute("stroke", "#ef4444");
+  g.appendChild(filter);
+  drawText(g, "Notch 陷波滤片", rx + 5, ry - 38, { fontSize: "10.5px", textAnchor: "middle", fill: "#ef4444" });
+
+  // Rayleigh blocked ray
+  const rayBlocked = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  rayBlocked.setAttribute("x1", cx.toString());
+  rayBlocked.setAttribute("y1", cy.toString());
+  rayBlocked.setAttribute("x2", rx.toString());
+  rayBlocked.setAttribute("y2", ry.toString());
+  rayBlocked.setAttribute("stroke", "var(--laser-green)");
+  rayBlocked.setAttribute("stroke-width", "3");
+  g.appendChild(rayBlocked);
+
+  // Raman pass ray
+  const ramPass = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  ramPass.setAttribute("x1", rx.toString());
+  ramPass.setAttribute("y1", ry.toString());
+  ramPass.setAttribute("x2", (rx + 60).toString());
+  ramPass.setAttribute("y2", ry.toString());
+  ramPass.setAttribute("stroke", "var(--beam-raman)");
+  ramPass.setAttribute("stroke-width", "2");
+  g.appendChild(ramPass);
+
+  parent.appendChild(g);
+}
+
+function drawPlconf(parent, lx, ly, cx, cy, rx, ry) {
+  const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+  // Lens
+  const lens = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+  lens.setAttribute("cx", cx.toString());
+  lens.setAttribute("cy", cy.toString());
+  lens.setAttribute("rx", "12");
+  lens.setAttribute("ry", "40");
+  lens.setAttribute("class", "component-glass");
+  g.appendChild(lens);
+
+  // Sample
+  const sample = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  sample.setAttribute("x", (cx - 40).toString());
+  sample.setAttribute("y", (cy + 120).toString());
+  sample.setAttribute("width", "80");
+  sample.setAttribute("height", "10");
+  sample.setAttribute("fill", "var(--primary-glow-bg)");
+  sample.setAttribute("stroke", "var(--primary-color)");
+  g.appendChild(sample);
+
+  // Exciton drawing schematic (electron + hole paired)
+  const electron = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  electron.setAttribute("cx", (cx - 10).toString());
+  electron.setAttribute("cy", (cy + 125).toString());
+  electron.setAttribute("r", "3");
+  electron.setAttribute("fill", "#38bdf8");
+  g.appendChild(electron);
+
+  const hole = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  hole.setAttribute("cx", (cx + 10).toString());
+  hole.setAttribute("cy", (cy + 125).toString());
+  hole.setAttribute("r", "3");
+  hole.setAttribute("fill", "#ef4444");
+  g.appendChild(hole);
+
+  const bond = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  bond.setAttribute("x1", (cx - 10).toString());
+  bond.setAttribute("y1", (cy + 125).toString());
+  bond.setAttribute("x2", (cx + 10).toString());
+  bond.setAttribute("y2", (cy + 125).toString());
+  bond.setAttribute("stroke", "#f59e0b");
+  bond.setAttribute("stroke-width", "1");
+  bond.setAttribute("stroke-dasharray", "1 1");
+  g.appendChild(bond);
+  drawText(g, "绑定激子 (Exciton)", cx, cy + 112, { fontSize: "10.5px", textAnchor: "middle", fill: "#f59e0b" });
+
+  // Green excitation laser
+  const beamExc = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  beamExc.setAttribute("x1", lx.toString());
+  beamExc.setAttribute("y1", ly.toString());
+  beamExc.setAttribute("x2", cx.toString());
+  beamExc.setAttribute("y2", cy.toString());
+  beamExc.setAttribute("stroke", "var(--laser-green)");
+  beamExc.setAttribute("stroke-width", "3");
+  g.appendChild(beamExc);
+
+  // Red PL emission out to right
+  const beamPl = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  beamPl.setAttribute("x1", cx.toString());
+  beamPl.setAttribute("y1", cy.toString());
+  beamPl.setAttribute("x2", rx.toString());
+  beamPl.setAttribute("y2", ry.toString());
+  beamPl.setAttribute("stroke", "var(--beam-pl)");
+  beamPl.setAttribute("stroke-width", "4.5");
+  g.appendChild(beamPl);
+  drawText(g, "荧光 (PL) 激发与多路收集", cx + 100, cy - 20, { fontSize: "11px", fill: "var(--beam-pl)" });
+
+  parent.appendChild(g);
+}
+
+function drawShgSymmetryGraph(parent, cx, cy) {
+  const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+  // Hexagonal lattice points representing MoS2 monolayer
+  // Center atom (Mo, blue) and outer 6 atoms (S, yellow)
+  const r = 50;
+  
+  // Draw inversion center indicator (crossed out center!)
+  const centerCross = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  centerCross.setAttribute("cx", cx.toString());
+  centerCross.setAttribute("cy", cy.toString());
+  centerCross.setAttribute("r", "16");
+  centerCross.setAttribute("fill", "rgba(239, 68, 68, 0.15)");
+  centerCross.setAttribute("stroke", "#ef4444");
+  centerCross.setAttribute("stroke-width", "1");
+  centerCross.setAttribute("stroke-dasharray", "2 2");
+  g.appendChild(centerCross);
+  drawText(g, "无对称中心!", cx, cy - 8, { fontSize: "10.5px", textAnchor: "middle", fill: "#ef4444", fontWeight: "700" });
+
+  for (let i = 0; i < 6; i++) {
+    const angle = i * Math.PI / 3;
+    const ax = cx + r * Math.cos(angle);
+    const ay = cy + r * Math.sin(angle);
+
+    const atom = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    atom.setAttribute("cx", ax.toString());
+    atom.setAttribute("cy", ay.toString());
+    atom.setAttribute("r", "10");
+    // Alternate Mo and S atoms representing inversion breaking
+    const isMo = i % 2 === 0;
+    atom.setAttribute("fill", isMo ? "rgba(56, 189, 248, 0.8)" : "rgba(245, 158, 11, 0.8)");
+    atom.setAttribute("stroke", isMo ? "#38bdf8" : "#f59e0b");
+    g.appendChild(atom);
+
+    const bond = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    bond.setAttribute("x1", cx.toString());
+    bond.setAttribute("y1", cy.toString());
+    bond.setAttribute("x2", ax.toString());
+    bond.setAttribute("y2", ay.toString());
+    bond.setAttribute("stroke", "rgba(255,255,255,0.15)");
+    bond.setAttribute("stroke-width", "2");
+    g.insertBefore(bond, centerCross);
+  }
+
+  // Draw a label representing D3h structure
+  drawText(g, "MoS₂ 单层晶格 (D₃ₕ)", cx, cy + 90, { fontSize: "12px", textAnchor: "middle", fill: "var(--text-main)", fontWeight: "700" });
+  drawText(g, "空间反演对称性破缺 (Inversion Symmetry Broken)", cx, cy + 110, { fontSize: "10.5px", textAnchor: "middle", fill: "var(--text-secondary)" });
+
+  parent.appendChild(g);
 }

@@ -73,7 +73,7 @@ export function renderBeam(beam, layoutId, state) {
     if (layoutId.startsWith("shg")) {
       color = "var(--laser-ir)"; // 1064nm
     } else if (layoutId === "plValley") {
-      color = "var(--laser-red)"; // 633nm
+      color = "var(--laser-green)"; // unified 532nm green excitation
     } else if (layoutId === "plStandard") {
       color = "var(--laser-green)"; // 532nm excitation in PL
     }
@@ -104,7 +104,7 @@ export function renderBeam(beam, layoutId, state) {
       if (beam.type === "excitation") {
         color = "var(--laser-green)";
         if (layoutId.startsWith("shg")) color = "var(--laser-ir)";
-        else if (layoutId === "plValley") color = "var(--laser-red)";
+        else if (layoutId === "plValley") color = "var(--laser-green)";
       } else if (beam.type === "signal") {
         if (layoutId.startsWith("pl") || layoutId === "lifetime") color = "var(--beam-pl)";
         else if (layoutId.startsWith("raman")) color = "var(--beam-raman)";
@@ -116,7 +116,7 @@ export function renderBeam(beam, layoutId, state) {
   }
 
   // 4. Draw Polarization Indicators
-  if (beam.hasPolarization && state.showFormulas) {
+  if (beam.hasPolarization) {
     const polPoints = beam.polarizationPoints || [];
     polPoints.forEach(pt => {
       const polG = renderPolarizationIndicator(pt[0], pt[1], beam, layoutId, state);
@@ -133,7 +133,55 @@ function renderPolarizationIndicator(x, y, beam, layoutId, state) {
 
   const pol = getPolarizationAtCoordinates(x, y, beam, layoutId, state);
   
-  if (pol.isCircular) {
+  // 1. Draw white background bubble
+  const bubble = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  bubble.setAttribute("cx", "0");
+  bubble.setAttribute("cy", "0");
+  bubble.setAttribute("r", "16");
+  bubble.setAttribute("fill", "var(--bg-card)");
+  bubble.setAttribute("stroke", "var(--border-card)");
+  bubble.setAttribute("stroke-width", "0.5");
+  bubble.setAttribute("opacity", "0.85");
+  g.appendChild(bubble);
+
+  // Apply intensity opacity if defined
+  if (pol.intensity !== undefined) {
+    g.setAttribute("opacity", Math.max(0.2, pol.intensity).toString());
+  }
+
+  // 2. Draw polarization symbols based on state
+  if (pol.stateText === "Unpolarized" || pol.stateText === "Partially polarized") {
+    // Unpolarized/Partially polarized: crossed V and H double arrows
+    const lineH = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    lineH.setAttribute("x1", "-11");
+    lineH.setAttribute("y1", "0");
+    lineH.setAttribute("x2", "11");
+    lineH.setAttribute("y2", "0");
+    lineH.setAttribute("class", "polarization-indicator");
+    g.appendChild(lineH);
+
+    const lineV = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    lineV.setAttribute("x1", "0");
+    lineV.setAttribute("y1", "-11");
+    lineV.setAttribute("x2", "0");
+    lineV.setAttribute("y2", "11");
+    lineV.setAttribute("class", "polarization-indicator");
+    g.appendChild(lineV);
+
+    // Arrow heads
+    const arrows = [
+      "M 11 0 L 7.5 -2.5 L 7.5 2.5 Z",   // Right
+      "M -11 0 L -7.5 -2.5 L -7.5 2.5 Z", // Left
+      "M 0 11 L -2.5 7.5 L 2.5 7.5 Z",   // Down
+      "M 0 -11 L -2.5 -7.5 L 2.5 -7.5 Z"  // Up
+    ];
+    arrows.forEach(d => {
+      const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("d", d);
+      p.setAttribute("class", "polarization-arrow");
+      g.appendChild(p);
+    });
+  } else if (pol.isCircular) {
     const circ = document.createElementNS("http://www.w3.org/2000/svg", "path");
     
     if (pol.chirality > 0) {
@@ -173,64 +221,30 @@ function renderPolarizationIndicator(x, y, beam, layoutId, state) {
     head.setAttribute("transform", `rotate(${pol.angle})`);
     g.appendChild(head);
   } else {
-    // Linear / Unpolarized representation
+    // Linear representation
+    const subG = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    subG.setAttribute("transform", `rotate(${-pol.angle})`);
+
     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
     line.setAttribute("x1", "-12");
     line.setAttribute("y1", "0");
     line.setAttribute("x2", "12");
     line.setAttribute("y2", "0");
     line.setAttribute("class", "polarization-indicator");
+    subG.appendChild(line);
     
     const head1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
     head1.setAttribute("d", "M 12 0 L 7 -3.5 L 7 3.5 Z");
     head1.setAttribute("class", "polarization-arrow");
+    subG.appendChild(head1);
     
     const head2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
     head2.setAttribute("d", "M -12 0 L -7 -3.5 L -7 3.5 Z");
     head2.setAttribute("class", "polarization-arrow");
-    
-    if (pol.intensity !== undefined) {
-      g.setAttribute("opacity", Math.max(0.15, pol.intensity).toString());
-    }
-    
-    g.setAttribute("transform", `translate(${x}, ${y}) rotate(${-pol.angle})`);
-    g.appendChild(line);
-    g.appendChild(head1);
-    g.appendChild(head2);
-  }
+    subG.appendChild(head2);
 
-  // Draw white background bubble bubble
-  const bubble = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-  bubble.setAttribute("cx", "0");
-  bubble.setAttribute("cy", "0");
-  bubble.setAttribute("r", "16");
-  bubble.setAttribute("fill", "var(--bg-card)");
-  bubble.setAttribute("stroke", "var(--border-card)");
-  bubble.setAttribute("stroke-width", "0.5");
-  bubble.setAttribute("opacity", "0.85");
-  g.insertBefore(bubble, g.firstChild);
-
-  // 5. Draw Polarization tracking text label (Section IX)
-  const textEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
-  textEl.textContent = pol.stateText || "Mixed";
-  
-  // Decide offset direction based on beam orientation (x = 700 is vertical)
-  const isVertical = x === 700;
-  if (isVertical) {
-    textEl.setAttribute("x", "22");
-    textEl.setAttribute("y", "4");
-    textEl.setAttribute("text-anchor", "start");
-  } else {
-    textEl.setAttribute("x", "0");
-    textEl.setAttribute("y", "26");
-    textEl.setAttribute("text-anchor", "middle");
+    g.appendChild(subG);
   }
-  
-  textEl.setAttribute("font-family", "'JetBrains Mono', monospace");
-  textEl.setAttribute("font-size", "9px");
-  textEl.setAttribute("font-weight", "600");
-  textEl.setAttribute("fill", "var(--text-secondary)");
-  g.appendChild(textEl);
 
   return g;
 }
@@ -302,7 +316,7 @@ function getPolarizationAtCoordinates(x, y, beam, layoutId, state) {
     }
 
     // 2. Non-polarized standard setups
-    if (layoutId === "ramanStandard" || layoutId === "plStandard" || layoutId === "lifetime") {
+    if (layoutId === "ramanStandard" || layoutId === "ramanIntro" || layoutId === "plStandard" || layoutId === "plIntro" || layoutId === "lifetime") {
       if (x < 420) {
         return { angle: 90, isCircular: false, stateText: "Linear-V" };
       } else if (x < 700) {
@@ -310,6 +324,17 @@ function getPolarizationAtCoordinates(x, y, beam, layoutId, state) {
       } else {
         return { angle: 90, isCircular: false, stateText: "Linear-V" };
       }
+    }
+
+    if (layoutId === "ramanVV" || layoutId === "ramanVH") {
+      return { angle: 90, isCircular: false, stateText: "Linear-V" };
+    }
+
+    if (layoutId === "ramanLinear") {
+      if (x < 420) {
+        return { angle: 90, isCircular: false, stateText: "Linear-V" };
+      }
+      return { angle: state.inputAngle, isCircular: false, stateText: `Linear-${state.inputAngle.toFixed(0)}°` };
     }
 
     // 3. Polarized microscope setups
@@ -340,9 +365,22 @@ function getPolarizationAtCoordinates(x, y, beam, layoutId, state) {
 
   // B. Signal path polarization
   if (beam.type === "signal") {
-    // 1. Raman signals (double pass HWP!)
-    if (layoutId.startsWith("raman") && layoutId !== "ramanStandard") {
-      const mode = (layoutId === "ramanVV" || layoutId === "ramanPolarized" && state.analyzerAngle === 90) ? "A1g" : "E";
+    // 1. Raman signals
+    if (layoutId === "ramanVV") {
+      return { angle: 90, isCircular: false, stateText: "Linear-V" };
+    }
+    if (layoutId === "ramanVH") {
+      return { angle: 0, isCircular: false, stateText: "Linear-H" };
+    }
+    if (layoutId === "ramanLinear") {
+      if (y > 350 || x < 1180) {
+        return { angle: state.inputAngle, isCircular: false, stateText: `Linear-${state.inputAngle.toFixed(0)}°` };
+      } else {
+        return { angle: state.analyzerAngle, isCircular: false, stateText: `Linear-${state.analyzerAngle.toFixed(0)}°` };
+      }
+    }
+    if (layoutId === "ramanPolarized") {
+      const mode = (state.analyzerAngle === 90) ? "A1g" : "E";
       const incPol = (2 * state.hwpAngle - 90) % 180;
       
       if (y > 470) {

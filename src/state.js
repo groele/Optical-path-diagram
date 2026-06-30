@@ -9,7 +9,7 @@ class AppState {
     // Default system settings
     this.currentLayoutId = "overview"; // Starts at page 1: Overview
     this.showGrid = true;
-    this.showFormulas = true;
+    this.showFormulas = false;
     this.theme = "dark";
     
     // Physical Optics Simulation parameters
