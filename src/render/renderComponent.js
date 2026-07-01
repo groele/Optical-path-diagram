@@ -135,18 +135,19 @@ function renderLaserShape(c) {
   let wavelength = c.params?.wavelength || "532 nm";
   let isFs = c.params?.mode === "fs";
   
-  // Choose LED indicator color and override wavelength label if SHG layout active
+  // Choose LED indicator color from the actual excitation wavelength.
   let ledColor = "var(--laser-green)";
   if (state.currentLayoutId.startsWith("shg")) {
     wavelength = "1064 nm";
     isFs = true;
     ledColor = "var(--laser-ir)";
-  } else if (state.currentLayoutId === "plStandard" || state.currentLayoutId === "plValley") {
-    wavelength = state.currentLayoutId === "plValley" ? "633 nm" : "488 nm";
-    ledColor = state.currentLayoutId === "plValley" ? "var(--laser-red)" : "var(--laser-cyan)";
+  } else if (wavelength === "633 nm") {
+    ledColor = "var(--laser-red)";
+  } else if (wavelength === "488 nm") {
+    ledColor = "var(--laser-cyan)";
+  } else if (wavelength === "785 nm") {
+    ledColor = "var(--laser-deepred)";
   } else {
-    // Raman or basic linear pol
-    wavelength = "532 nm";
     ledColor = "var(--laser-green)";
   }
   

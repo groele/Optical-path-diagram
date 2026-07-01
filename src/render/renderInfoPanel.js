@@ -147,7 +147,7 @@ function renderParameters(container, layout) {
     
     const waveOptions = layout.category === "Raman" 
       ? ["532 nm", "633 nm", "785 nm", "488 nm"] 
-      : ["488 nm", "532 nm", "633 nm"];
+      : ["532 nm"];
 
     waveOptions.forEach(opt => {
       const el = document.createElement("option");
