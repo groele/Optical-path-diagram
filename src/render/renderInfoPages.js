@@ -792,17 +792,6 @@ function renderRamanIntroPage(svg) {
   leftPanel.setAttribute("rx", "12");
   svg.appendChild(leftPanel);
 
-  const rightPanel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  rightPanel.setAttribute("x", "830");
-  rightPanel.setAttribute("y", "170");
-  rightPanel.setAttribute("width", "650");
-  rightPanel.setAttribute("height", "620");
-  rightPanel.setAttribute("fill", "var(--bg-card)");
-  rightPanel.setAttribute("stroke", "var(--border-card)");
-  rightPanel.setAttribute("stroke-width", "2");
-  rightPanel.setAttribute("rx", "12");
-  svg.appendChild(rightPanel);
-
   // --- Draw Energy Levels on Left ---
   drawText(svg, "拉曼散射能级跃迁图 (Jablonski Diagram)", 445, 210, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
 
@@ -830,24 +819,41 @@ function renderRamanIntroPage(svg) {
   // Legend Text
   drawText(svg, "频移量 Δν = |ν₀ - ν_scattered| 对应声子能量", 445, 750, { fontSize: "13px", fontWeight: "600", textAnchor: "middle", fill: "var(--text-secondary)" });
 
-
-  // --- Draw Confocal Filter Path on Right ---
-  drawText(svg, "共焦拉曼检测光路原理 (Confocal Path Scheme)", 1155, 210, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
-
-  // Draw schematic components
-  drawConfocalConf(svg, 900, 350, 1155, 540, 1400, 350);
-
-  // Explanation notes below
-  let currentY = 650;
-  const bulletPoints = [
-    "• 斯托克斯能级：光子碰撞晶格，将一部分能量转移给声子振动，出射光子能量降低，对应特征拉曼频移。",
-    "• 弹性瑞利散射：强度比拉曼非弹性散射强 10⁶ - 10⁸ 倍！",
-    "• Notch 陷波滤光片：必须放在收集路径上，精准阻断极强 532nm 瑞利光，只让微弱的拉曼偏离光子通过。",
-    "• 高色散光栅 (1800g/mm)：分光分辨极细微的频移（分辨率达几 cm⁻¹，对应 0.1 meV 声子能级）。"
-  ];
-  bulletPoints.forEach(pt => {
-    drawWrappedText(svg, pt, 860, currentY, 590, 18, { fontSize: "12px", fill: "var(--text-secondary)" });
-    currentY += 34;
+  renderPrincipleBrief(svg, {
+    title: "拉曼测试如何读懂",
+    subtitle: "Raman = 用非弹性散射读晶格振动",
+    color: "var(--beam-raman)",
+    equation: "Δν = |ν₀ - νs| ；峰位对应声子能量，强度受 Raman 张量与偏振几何控制",
+    readouts: [
+      { label: "峰位 Δν", value: "声子能量 / 应力" },
+      { label: "峰宽 FWHM", value: "缺陷 / 温度 / 寿命" },
+      { label: "VV / VH 极图", value: "晶轴与对称性" }
+    ],
+    cards: [
+      {
+        title: "1. 测量对象",
+        short: "晶格振动声子；峰位就是振动能量坐标",
+        body: "Raman 不直接测带隙，而是测晶格振动声子。峰位反映振动能量，峰宽反映散射寿命、缺陷、应力和温度，峰强受材料取向与散射张量影响。"
+      },
+      {
+        title: "2. 物理机制",
+        short: "虚能级非弹性散射；Stokes 少一个声子能量",
+        body: "入射光先诱导虚能级极化，再以 Stokes 或 Anti-Stokes 光子散射出来。Stokes 光能量降低，差值正好等于一个声子的能量。"
+      },
+      {
+        title: "3. 光路逻辑",
+        short: "Notch 去瑞利光；1800 g/mm 解析 cm⁻¹ 频移",
+        body: "532 nm 激光经物镜聚焦到样品；回程信号中瑞利散射远强于 Raman，因此必须用 Notch 滤片阻断激发波长，再用 1800 g/mm 光栅解析 cm⁻¹ 级频移。"
+      },
+      {
+        title: "4. 读数方法",
+        body: "先读峰位和峰宽，再比较强度比、峰位移动和劈裂。应力、层数、相变、掺杂和温度变化通常会改变这些谱线参数。"
+      },
+      {
+        title: "5. 偏振扩展",
+        body: "VV/VH 或 HWP 扫描是在改变入射/散射偏振矢量。不同声子模式的 Raman 张量不同，因此偏振依赖可用来判别晶格对称性和晶轴方向。"
+      }
+    ]
   });
 }
 
@@ -866,17 +872,6 @@ function renderPlIntroPage(svg) {
   leftPanel.setAttribute("stroke-width", "2");
   leftPanel.setAttribute("rx", "12");
   svg.appendChild(leftPanel);
-
-  const rightPanel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  rightPanel.setAttribute("x", "830");
-  rightPanel.setAttribute("y", "170");
-  rightPanel.setAttribute("width", "650");
-  rightPanel.setAttribute("height", "620");
-  rightPanel.setAttribute("fill", "var(--bg-card)");
-  rightPanel.setAttribute("stroke", "var(--border-card)");
-  rightPanel.setAttribute("stroke-width", "2");
-  rightPanel.setAttribute("rx", "12");
-  svg.appendChild(rightPanel);
 
   // --- Draw Bands on Left ---
   drawText(svg, "半导体能带结构吸收与荧光发射 (Band Diagram)", 445, 215, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
@@ -921,22 +916,41 @@ function renderPlIntroPage(svg) {
 
   drawText(svg, "能级守恒: 发射荧光能量 hν_PL = E_g (小于激发能 hν_exc)", 445, 750, { fontSize: "13px", fontWeight: "600", textAnchor: "middle", fill: "var(--text-secondary)" });
 
-
-  // --- Draw PL Testing Layout on Right ---
-  drawText(svg, "显微 PL 测试系统配置 (PL Config)", 1155, 215, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
-
-  drawPlconf(svg, 900, 350, 1155, 540, 1400, 350);
-
-  // Explanation notes below
-  let py = 650;
-  const plBulletPoints = [
-    "• 辐射复合发光：半导体吸收光子后，导带电子弛豫落入价带顶空穴，复合时以荧光形式放出带隙能量 Eg。",
-    "• 激子/Trion复合：二维 TMDs (如单层 MoS₂) 具有强的库伦相互作用，激发极易形成激子 (Exciton) 和带电激子 (Trion) 并从这些通道发光。",
-    "• 宽带分光 (150g/mm)：PL 的发光范围较宽 (如 600-800nm)，光谱仪使用 150 lines/mm 低色散刻线，能保证 CCD 一次捕获完整的 PL 包络峰线。"
-  ];
-  plBulletPoints.forEach(pt => {
-    drawWrappedText(svg, pt, 860, py, 590, 18, { fontSize: "12px", fill: "var(--text-secondary)" });
-    py += 34;
+  renderPrincipleBrief(svg, {
+    title: "PL 测试如何读懂",
+    subtitle: "PL = 用辐射复合读电子态、激子态和缺陷态",
+    color: "var(--beam-pl)",
+    equation: "hνexc > Eg；发光峰 hνPL 来自激子、Trion 或缺陷态辐射复合",
+    readouts: [
+      { label: "峰能量", value: "带隙 / 激子态" },
+      { label: "强度与半峰宽", value: "辐射效率 / 无序" },
+      { label: "DOLP / DOCP", value: "各向异性 / 谷极化" }
+    ],
+    cards: [
+      {
+        title: "1. 测量对象",
+        short: "激子、Trion 和缺陷态的辐射复合发光",
+        body: "PL 测的是样品被光激发后自己发出的光。峰位对应发光跃迁能量，强度反映吸收、辐射效率和非辐射损耗，峰宽反映无序、温度和相互作用。"
+      },
+      {
+        title: "2. 物理机制",
+        short: "hνexc > Eg 产生载流子；弛豫后从低能态发光",
+        body: "激发光能量高于带隙时产生电子-空穴对；载流子先快速弛豫到低能态，再以激子、带电激子或缺陷态形式复合发光。"
+      },
+      {
+        title: "3. 光路逻辑",
+        short: "DM / LP 分离激发与发光；150 g/mm 覆盖宽谱",
+        body: "二向色镜反射 532 nm 激发光进入物镜，同时让长波长 PL 回程透过；长通滤光片进一步去除残余激发光，150 g/mm 光栅用于一次捕获宽发光带。"
+      },
+      {
+        title: "4. 读数方法",
+        body: "先判断主峰能量和峰宽，再比较强度、肩峰、低能尾和温度/功率依赖。A 激子、Trion、局域态和缺陷峰需要按能量位置与响应规律区分。"
+      },
+      {
+        title: "5. 偏振扩展",
+        body: "线偏振 PL 用 HWP 与检偏器读 DOLP，反映低对称晶体的发光各向异性；圆偏振 PL 用 QWP 产生/解析 σ⁺、σ⁻，读谷选择定则和 DOCP。"
+      }
+    ]
   });
 }
 
@@ -955,17 +969,6 @@ function renderShgIntroPage(svg) {
   leftPanel.setAttribute("stroke-width", "2");
   leftPanel.setAttribute("rx", "12");
   svg.appendChild(leftPanel);
-
-  const rightPanel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  rightPanel.setAttribute("x", "830");
-  rightPanel.setAttribute("y", "170");
-  rightPanel.setAttribute("width", "650");
-  rightPanel.setAttribute("height", "620");
-  rightPanel.setAttribute("fill", "var(--bg-card)");
-  rightPanel.setAttribute("stroke", "var(--border-card)");
-  rightPanel.setAttribute("stroke-width", "2");
-  rightPanel.setAttribute("rx", "12");
-  svg.appendChild(rightPanel);
 
   // --- Draw SHG energy levels on Left ---
   drawText(svg, "SHG 能级图与虚拟激发过程 (SHG Levels)", 445, 215, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
@@ -987,22 +990,200 @@ function renderShgIntroPage(svg) {
 
   drawText(svg, "瞬间相干能量融合过程: E_SHG = 2 · E_fundamental", 445, 750, { fontSize: "13px", fontWeight: "600", textAnchor: "middle", fill: "var(--text-secondary)" });
 
+  renderPrincipleBrief(svg, {
+    title: "SHG 测试如何读懂",
+    subtitle: "SHG = 用二阶非线性响应读反演对称性和晶轴",
+    color: "var(--laser-ir)",
+    equation: "P(2ω) = ε₀ χ(2) : E(ω)E(ω)；中心反演对称材料的电偶极 χ(2) 近似为 0",
+    readouts: [
+      { label: "I₂ω 强度", value: "χ(2) / 共振增强" },
+      { label: "层数与晶区", value: "反演对称性" },
+      { label: "六瓣极图", value: "晶轴与镜面对称方向" }
+    ],
+    cards: [
+      {
+        title: "1. 测量对象",
+        short: "二阶非线性 χ(2)；对反演对称性最敏感",
+        body: "SHG 测的是材料在强光场下把两个基频光子相干合成为一个二倍频光子的能力。信号强弱直接受 χ(2)、层数、取向和共振增强影响。"
+      },
+      {
+        title: "2. 物理机制",
+        short: "两个 ω 相干合成一个 2ω；不是 PL 或 Raman",
+        body: "两个 ω 光子通过虚能级瞬时耦合成一个 2ω 光子。它不是 PL 的真实能级复合，也不是 Raman 的能量频移，而是相干非线性极化辐射。"
+      },
+      {
+        title: "3. 光路逻辑",
+        short: "1064 nm 入射；滤出 532 nm 二倍频信号",
+        body: "1064 nm 飞秒激光提供高峰值电场；样品产生 532 nm 二倍频光；短通和窄带滤片去除残余 1064 nm，只让 532 nm SHG 进入探测器。"
+      },
+      {
+        title: "4. 读数方法",
+        body: "先确认 2ω 波长，再比较强度随层数、晶区、功率和偏振角的变化。理想二阶过程常表现为 I₂ω 随入射功率近似二次增长。"
+      },
+      {
+        title: "5. 偏振扩展",
+        body: "旋转 HWP 与检偏器得到极角图。单层 D₃h TMD 常见六瓣花形，瓣方向和节点位置可用于确定晶轴与镜面对称方向。"
+      }
+    ]
+  });
+}
 
-  // --- Draw SHG symmetry mapping on Right ---
-  drawText(svg, "晶格反演对称中心探测原理 (Inversion Symmetry)", 1155, 215, { fontSize: "16px", fontWeight: "700", textAnchor: "middle", fill: "var(--primary-color)" });
+function renderPrincipleBrief(svg, config) {
+  const x = 830;
+  const y = 170;
+  const w = 650;
+  const h = 620;
+  const panel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  panel.setAttribute("x", x.toString());
+  panel.setAttribute("y", y.toString());
+  panel.setAttribute("width", w.toString());
+  panel.setAttribute("height", h.toString());
+  panel.setAttribute("fill", "var(--bg-card)");
+  panel.setAttribute("stroke", "var(--border-card)");
+  panel.setAttribute("stroke-width", "2");
+  panel.setAttribute("rx", "10");
+  svg.appendChild(panel);
 
-  drawShgSymmetryGraph(svg, 1155, 360);
+  const accent = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  accent.setAttribute("x", x.toString());
+  accent.setAttribute("y", y.toString());
+  accent.setAttribute("width", "6");
+  accent.setAttribute("height", h.toString());
+  accent.setAttribute("fill", config.color);
+  accent.setAttribute("rx", "3");
+  accent.setAttribute("opacity", "0.9");
+  svg.appendChild(accent);
 
-  // Explanation notes below
-  let sy = 635;
-  const shgBulletPoints = [
-    "• 二阶非线性过程：两个基频光子在超快强电场中被同时相干吸收入虚能级，瞬时相干融合成一个 2ω 的倍频光子发射出来。",
-    "• 反演对称性敏感：SHG 电偶极矩极化 P(2) = x(2) : EE。如果材料具有反演对称中心，则 x(2) = 0。因此 SHG 可作为探测对称中心破缺（如单层 MoS₂）的极灵敏探针。",
-    "• 偏振旋转各向异性：通过偏振面扫查，二倍频极性图谱呈现具有 D₃ₕ 晶面结构特征的六瓣花形偏振花图样，用于精准测定晶格偏角朝向。"
-  ];
-  shgBulletPoints.forEach(pt => {
-    drawWrappedText(svg, pt, 860, sy, 590, 18, { fontSize: "12px", fill: "var(--text-secondary)" });
-    sy += 34;
+  drawText(svg, "PRINCIPLE MAP", x + 34, y + 38, {
+    fontSize: "12px",
+    fontWeight: "800",
+    textAnchor: "start",
+    fill: config.color
+  });
+  drawText(svg, config.title, x + 34, y + 76, {
+    fontSize: "28px",
+    fontWeight: "800",
+    textAnchor: "start",
+    fill: "var(--text-main)"
+  });
+  drawWrappedText(svg, config.subtitle, x + 34, y + 104, w - 68, 22, {
+    fontSize: "17px",
+    fontWeight: "650",
+    fill: "var(--text-secondary)"
+  });
+
+  const primaryCards = config.cards.slice(0, 3);
+  primaryCards.forEach((card, index) => {
+    const cardX = x + 34;
+    const cardY = y + 146 + index * 102;
+    const cardW = w - 68;
+    const cardH = 84;
+    const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    bg.setAttribute("x", cardX.toString());
+    bg.setAttribute("y", cardY.toString());
+    bg.setAttribute("width", cardW.toString());
+    bg.setAttribute("height", cardH.toString());
+    bg.setAttribute("fill", "rgba(255,255,255,0.028)");
+    bg.setAttribute("stroke", "var(--border-card)");
+    bg.setAttribute("stroke-width", "1");
+    bg.setAttribute("rx", "8");
+    svg.appendChild(bg);
+
+    const rail = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rail.setAttribute("x", cardX.toString());
+    rail.setAttribute("y", cardY.toString());
+    rail.setAttribute("width", "4");
+    rail.setAttribute("height", cardH.toString());
+    rail.setAttribute("fill", config.color);
+    rail.setAttribute("rx", "2");
+    rail.setAttribute("opacity", "0.85");
+    svg.appendChild(rail);
+
+    const indexDot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    indexDot.setAttribute("cx", (cardX + 34).toString());
+    indexDot.setAttribute("cy", (cardY + 42).toString());
+    indexDot.setAttribute("r", "15");
+    indexDot.setAttribute("fill", config.color);
+    indexDot.setAttribute("opacity", "0.92");
+    svg.appendChild(indexDot);
+
+    drawText(svg, String(index + 1), cardX + 34, cardY + 47, {
+      fontSize: "16px",
+      fontWeight: "800",
+      fill: "#fff",
+      textAnchor: "middle"
+    });
+
+    drawText(svg, card.title.replace(/^\d+\.\s*/, ""), cardX + 66, cardY + 32, {
+      fontSize: "22px",
+      fontWeight: "800",
+      fill: "var(--text-main)",
+      textAnchor: "start"
+    });
+    drawWrappedText(svg, card.short || card.body, cardX + 66, cardY + 58, cardW - 92, 22, {
+      fontSize: "17px",
+      fontWeight: "600",
+      fill: "var(--text-secondary)"
+    });
+  });
+
+  const eq = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  eq.setAttribute("x", (x + 34).toString());
+  eq.setAttribute("y", (y + 470).toString());
+  eq.setAttribute("width", (w - 68).toString());
+  eq.setAttribute("height", "52");
+  eq.setAttribute("fill", "rgba(99,102,241,0.09)");
+  eq.setAttribute("stroke", "var(--primary-glow-border)");
+  eq.setAttribute("stroke-width", "1");
+  eq.setAttribute("rx", "8");
+  svg.appendChild(eq);
+
+  drawText(svg, "核心关系", x + 54, y + 492, {
+    fontSize: "13px",
+    fontWeight: "800",
+    fill: config.color,
+    textAnchor: "start"
+  });
+  drawWrappedText(svg, config.equation, x + 126, y + 492, w - 180, 21, {
+    fontSize: "16px",
+    fontWeight: "700",
+    fill: "var(--text-main)"
+  });
+
+  const readouts = config.readouts || [];
+  readouts.forEach((item, index) => {
+    const chipW = 182;
+    const chipX = x + 34 + index * 200;
+    const chipY = y + 548;
+    const chip = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    chip.setAttribute("x", chipX.toString());
+    chip.setAttribute("y", chipY.toString());
+    chip.setAttribute("width", chipW.toString());
+    chip.setAttribute("height", "58");
+    chip.setAttribute("fill", "rgba(255,255,255,0.025)");
+    chip.setAttribute("stroke", "var(--border-card)");
+    chip.setAttribute("stroke-width", "1");
+    chip.setAttribute("rx", "8");
+    svg.appendChild(chip);
+
+    const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    dot.setAttribute("cx", (chipX + 16).toString());
+    dot.setAttribute("cy", (chipY + 20).toString());
+    dot.setAttribute("r", "4");
+    dot.setAttribute("fill", config.color);
+    svg.appendChild(dot);
+
+    drawText(svg, item.label, chipX + 28, chipY + 24, {
+      fontSize: "15px",
+      fontWeight: "800",
+      fill: "var(--text-main)",
+      textAnchor: "start"
+    });
+    drawWrappedText(svg, item.value, chipX + 16, chipY + 46, chipW - 28, 18, {
+      fontSize: "12px",
+      fontWeight: "650",
+      fill: "var(--text-secondary)"
+    });
   });
 }
 

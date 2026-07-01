@@ -306,6 +306,37 @@
   padding: 16px;
 }
 
+@media (max-width: 900px) {
+  .app {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .main-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(620px, 72vh) auto auto;
+    height: auto;
+    min-height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+
+  .canvas-container {
+    order: 1;
+    min-height: 620px;
+  }
+
+  .sidebar-left {
+    order: 2;
+    min-height: 360px;
+    max-height: 420px;
+  }
+
+  .sidebar-right {
+    order: 3;
+    min-height: 880px;
+  }
+}
+
 /* Control slider elements styling */
 .control-group {
   margin-bottom: 14px;
@@ -405,6 +436,34 @@
 .info-notes-list li {
   font-size: 0.8rem;
   color: var(--text-muted);
+}
+
+.principle-step-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 2px 0 10px;
+}
+
+.principle-step-card {
+  border: 1px solid var(--border-card);
+  border-left: 3px solid var(--primary-color);
+  border-radius: 8px;
+  padding: 9px 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.principle-step-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.principle-step-body {
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
 }
 
 /* Detail Card Content */
